@@ -6,6 +6,8 @@ import (
 
 	"github.com/geschke/invafetch/pkg/dbconn"
 	"github.com/geschke/invafetch/pkg/invdb"
+	prom "github.com/geschke/invaps/pkg/prometheus"
+
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 )
@@ -43,12 +45,13 @@ func GetDbConfig() dbconn.DatabaseConfiguration {
 	return config
 }
 
-func infoDb() {
+func infoDb() invdb.Repository {
 	fmt.Println("Test")
 	config := dbconn.ConnectDB(GetDbConfig())
 
 	repository := invdb.NewRepository(config)
-	repository.GetProcessdata()
+	//repository.GetProcessdata()
+	return *repository
 }
 
 func main() {
@@ -66,9 +69,13 @@ func main() {
 		log.Fatal("cannot load config:", err)
 	}
 
-	infoDb()
+	invDbRepository := infoDb()
 
 	router := gin.Default()
+
+	router.GET("/metrics", prom.PromHandler())
+
+	prom.RecordCurrentValues(&invDbRepository)
 
 	/*router.GET("/metrics", miakprom.PromHandler())
 
@@ -86,10 +93,11 @@ func main() {
 		config := dbconn.ConnectDB(GetDbConfig())
 
 		repository := invdb.NewRepository(config)
-		repository.GetProcessdata()
+		values := repository.GetHomeConsumption()
 
 		c.JSON(200, gin.H{
 			"message": "val test",
+			"values":  values,
 		})
 	})
 
