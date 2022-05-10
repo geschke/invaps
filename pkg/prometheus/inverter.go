@@ -1,6 +1,7 @@
 package miakprom
 
 import (
+	"fmt"
 	"log"
 	"strconv"
 	"time"
@@ -22,6 +23,26 @@ var (
 		//Namespace: "Home Consumption",
 		Name: "home_own_p_watt",
 		Help: "Home Consumption in Watt.",
+	})
+	homePvP = prometheus.NewGauge(prometheus.GaugeOpts{
+		//Namespace: "Home Consumption",
+		Name: "home_pv_p_watt",
+		Help: "Current home consumption is covered from PV",
+	})
+	homeP = prometheus.NewGauge(prometheus.GaugeOpts{
+		//Namespace: "Home Consumption",
+		Name: "home_p_watt",
+		Help: "Current home consumption",
+	})
+	homeBatP = prometheus.NewGauge(prometheus.GaugeOpts{
+		//Namespace: "Home Consumption",
+		Name: "home_bat_p_watt",
+		Help: "Current home consumption is covered from Battery",
+	})
+	homeGridP = prometheus.NewGauge(prometheus.GaugeOpts{
+		//Namespace: "Home Consumption",
+		Name: "home_grid_p_watt",
+		Help: "Current home consumption is covered from Grid",
 	})
 )
 
@@ -59,6 +80,10 @@ var assetMap = make(map[string]assetGaugeOptsType)
 */
 func init() {
 	prometheus.MustRegister(homeOwnP)
+	prometheus.MustRegister(homeP)
+	prometheus.MustRegister(homePvP)
+	prometheus.MustRegister(homeBatP)
+	prometheus.MustRegister(homeGridP)
 }
 
 // PromHandler is the main Prometheus http handler
@@ -72,12 +97,34 @@ func PromHandler() gin.HandlerFunc {
 
 func fillCurrentFromDB(db *invdb.Repository) error {
 	homeConsumption := db.GetHomeConsumption()
+	fmt.Println(homeConsumption)
 
 	homeOwnPValue, err := strconv.ParseFloat(homeConsumption.HomeOwnP, 64)
 	if err != nil {
 		return err
 	}
 	homeOwnP.Set(homeOwnPValue)
+	homePvPValue, err := strconv.ParseFloat(homeConsumption.HomePvP, 64)
+	if err != nil {
+		return err
+	}
+	homePvP.Set(homePvPValue)
+	homePValue, err := strconv.ParseFloat(homeConsumption.HomeP, 64)
+	if err != nil {
+		return err
+	}
+	homeP.Set(homePValue)
+	homeBatPValue, err := strconv.ParseFloat(homeConsumption.HomeBatP, 64)
+	if err != nil {
+		return err
+	}
+	homeBatP.Set(homeBatPValue)
+	homeGridPValue, err := strconv.ParseFloat(homeConsumption.HomeGridP, 64)
+	if err != nil {
+		return err
+	}
+	homeGridP.Set(homeGridPValue)
+
 	return nil
 }
 
