@@ -1,4 +1,4 @@
-package miakprom
+package invaprom
 
 import (
 	"fmt"
@@ -18,7 +18,110 @@ import (
 	Help: "Asset values",
 })*/
 
-var (
+var home = struct {
+	OwnP  prometheus.Gauge
+	PvP   prometheus.Gauge
+	P     prometheus.Gauge
+	BatP  prometheus.Gauge
+	GridP prometheus.Gauge
+}{
+	OwnP: prometheus.NewGauge(prometheus.GaugeOpts{
+		//Namespace: "Home Consumption",
+		Name: "home_own_p_watt",
+		Help: "Home Consumption in Watt.",
+	}),
+	PvP: prometheus.NewGauge(prometheus.GaugeOpts{
+		//Namespace: "Home Consumption",
+		Name: "home_pv_p_watt",
+		Help: "Current home consumption is covered from PV",
+	}),
+	P: prometheus.NewGauge(prometheus.GaugeOpts{
+		//Namespace: "Home Consumption",
+		Name: "home_p_watt",
+		Help: "Current home consumption",
+	}),
+	BatP: prometheus.NewGauge(prometheus.GaugeOpts{
+		//Namespace: "Home Consumption",
+		Name: "home_bat_p_watt",
+		Help: "Current home consumption is covered from Battery",
+	}),
+	GridP: prometheus.NewGauge(prometheus.GaugeOpts{
+		//Namespace: "Home Consumption",
+		Name: "home_grid_p_watt",
+		Help: "Current home consumption is covered from Grid",
+	}),
+}
+
+var devLocBat = struct {
+	BatManufacturer prometheus.Gauge
+	BatModel        prometheus.Gauge
+	BatSerialNo     prometheus.Gauge
+	BatVersionFW    prometheus.Gauge
+	Cycles          prometheus.Gauge
+	FullChargeCap_E prometheus.Gauge
+	I               prometheus.Gauge
+	P               prometheus.Gauge
+	SoC             prometheus.Gauge
+	U               prometheus.Gauge
+	WorkCapacity    prometheus.Gauge
+}{
+	BatManufacturer: prometheus.NewGauge(prometheus.GaugeOpts{
+		//Namespace: "Home Consumption",
+		Name: "devices_local_battery_bat_manufacturer",
+		Help: "Battery Manufacturer",
+	}),
+	BatModel: prometheus.NewGauge(prometheus.GaugeOpts{
+		//Namespace: "Home Consumption",
+		Name: "devices_local_battery_bat_model",
+		Help: "Battery Model",
+	}),
+	BatSerialNo: prometheus.NewGauge(prometheus.GaugeOpts{
+		//Namespace: "Home Consumption",
+		Name: "devices_local_battery_bat_serial_no",
+		Help: "Battery Serial Number",
+	}),
+	BatVersionFW: prometheus.NewGauge(prometheus.GaugeOpts{
+		//Namespace: "Home Consumption",
+		Name: "devices_local_battery_bat_version_fw",
+		Help: "Battery Firmware Version",
+	}),
+	Cycles: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_battery_cycles",
+		Help: "Battery Cycles",
+	}),
+	FullChargeCap_E: prometheus.NewGauge(prometheus.GaugeOpts{
+		//Namespace: "Home Consumption",
+		Name: "devices_local_battery_full_charge_cap_e",
+		Help: "Battery FullChargeCap_E",
+	}),
+	I: prometheus.NewGauge(prometheus.GaugeOpts{
+		//Namespace: "Home Consumption",
+		Name: "devices_local_battery_i",
+		Help: "Battery I",
+	}),
+	P: prometheus.NewGauge(prometheus.GaugeOpts{
+
+		Name: "devices_local_battery_p",
+		Help: "Battery P",
+	}),
+	SoC: prometheus.NewGauge(prometheus.GaugeOpts{
+
+		Name: "devices_local_battery_soc",
+		Help: "Battery SoC",
+	}),
+	U: prometheus.NewGauge(prometheus.GaugeOpts{
+
+		Name: "devices_local_battery_u",
+		Help: "Battery U",
+	}),
+	WorkCapacity: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_battery_work_capacity",
+		Help: "Battery Work Capacity",
+	}),
+}
+
+/*var (
+
 	homeOwnP = prometheus.NewGauge(prometheus.GaugeOpts{
 		//Namespace: "Home Consumption",
 		Name: "home_own_p_watt",
@@ -45,7 +148,7 @@ var (
 		Help: "Current home consumption is covered from Grid",
 	})
 )
-
+*/
 /*
 // AssetGaugeGlobal is the Gauge vector to be filled with asset values
 var AssetGaugeGlobal = prometheus.NewGaugeVec(
@@ -79,11 +182,16 @@ var assetGauge []prometheus.Gauge
 var assetMap = make(map[string]assetGaugeOptsType)
 */
 func init() {
-	prometheus.MustRegister(homeOwnP)
-	prometheus.MustRegister(homeP)
-	prometheus.MustRegister(homePvP)
-	prometheus.MustRegister(homeBatP)
-	prometheus.MustRegister(homeGridP)
+	prometheus.MustRegister(home.OwnP)
+	prometheus.MustRegister(home.P)
+	prometheus.MustRegister(home.PvP)
+	prometheus.MustRegister(home.BatP)
+	prometheus.MustRegister(home.GridP)
+	prometheus.MustRegister(devLocBat.BatManufacturer)
+	prometheus.MustRegister(devLocBat.BatModel)
+	prometheus.MustRegister(devLocBat.BatSerialNo)
+	prometheus.MustRegister(devLocBat.BatVersionFW)
+	prometheus.MustRegister(devLocBat.Cycles)
 }
 
 // PromHandler is the main Prometheus http handler
@@ -103,27 +211,64 @@ func fillCurrentFromDB(db *invdb.Repository) error {
 	if err != nil {
 		return err
 	}
-	homeOwnP.Set(homeOwnPValue)
+	home.OwnP.Set(homeOwnPValue)
 	homePvPValue, err := strconv.ParseFloat(homeConsumption.HomePvP, 64)
 	if err != nil {
 		return err
 	}
-	homePvP.Set(homePvPValue)
+	home.PvP.Set(homePvPValue)
 	homePValue, err := strconv.ParseFloat(homeConsumption.HomeP, 64)
 	if err != nil {
 		return err
 	}
-	homeP.Set(homePValue)
+	home.P.Set(homePValue)
 	homeBatPValue, err := strconv.ParseFloat(homeConsumption.HomeBatP, 64)
 	if err != nil {
 		return err
 	}
-	homeBatP.Set(homeBatPValue)
+	home.BatP.Set(homeBatPValue)
 	homeGridPValue, err := strconv.ParseFloat(homeConsumption.HomeGridP, 64)
 	if err != nil {
 		return err
 	}
-	homeGridP.Set(homeGridPValue)
+	home.GridP.Set(homeGridPValue)
+
+	return nil
+}
+
+func fillLastFromDB(db *invdb.Repository) error {
+
+	batteryLast := db.GetDevicesLocalBatteryLast()
+	fmt.Println(batteryLast)
+	BatManufacturer, err := strconv.ParseFloat(batteryLast.BatManufacturer, 64)
+	if err != nil {
+		return err
+	}
+	devLocBat.BatManufacturer.Set(BatManufacturer)
+
+	BatModel, err := strconv.ParseFloat(batteryLast.BatModel, 64)
+	if err != nil {
+		return err
+	}
+	devLocBat.BatModel.Set(BatModel)
+
+	BatSerialNo, err := strconv.ParseFloat(batteryLast.BatSerialNo, 64)
+	if err != nil {
+		return err
+	}
+	devLocBat.BatSerialNo.Set(BatSerialNo)
+
+	BatVersionFW, err := strconv.ParseFloat(batteryLast.BatVersionFW, 64)
+	if err != nil {
+		return err
+	}
+	devLocBat.BatVersionFW.Set(BatVersionFW)
+
+	Cycles, err := strconv.ParseFloat(batteryLast.Cycles, 64)
+	if err != nil {
+		return err
+	}
+	devLocBat.Cycles.Set(Cycles)
 
 	return nil
 }
@@ -136,6 +281,14 @@ func RecordCurrentValues(db *invdb.Repository) {
 			//FillValuesTest()
 			fillCurrentFromDB(db)
 			time.Sleep(30 * time.Second)
+		}
+	}()
+	go func() {
+		for {
+			log.Println("in recordcurrentValues again with last values!!!")
+			//FillValuesTest()
+			fillLastFromDB(db)
+			time.Sleep(60 * time.Second)
 		}
 	}()
 }
