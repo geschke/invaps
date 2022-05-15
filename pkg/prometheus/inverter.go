@@ -192,6 +192,13 @@ func init() {
 	prometheus.MustRegister(devLocBat.BatSerialNo)
 	prometheus.MustRegister(devLocBat.BatVersionFW)
 	prometheus.MustRegister(devLocBat.Cycles)
+	prometheus.MustRegister(devLocBat.FullChargeCap_E)
+	prometheus.MustRegister(devLocBat.I)
+	prometheus.MustRegister(devLocBat.P)
+	prometheus.MustRegister(devLocBat.SoC)
+	prometheus.MustRegister(devLocBat.U)
+	prometheus.MustRegister(devLocBat.WorkCapacity)
+
 }
 
 // PromHandler is the main Prometheus http handler
@@ -232,6 +239,43 @@ func fillCurrentFromDB(db *invdb.Repository) error {
 		return err
 	}
 	home.GridP.Set(homeGridPValue)
+
+	values := db.GetDevicesLocalBattery()
+	FullChargeCap_E, err := strconv.ParseFloat(values.FullChargeCap_E, 64)
+	if err != nil {
+		return err
+	}
+	devLocBat.FullChargeCap_E.Set(FullChargeCap_E)
+
+	I, err := strconv.ParseFloat(values.I, 64)
+	if err != nil {
+		return err
+	}
+	devLocBat.I.Set(I)
+
+	P, err := strconv.ParseFloat(values.P, 64)
+	if err != nil {
+		return err
+	}
+	devLocBat.P.Set(P)
+
+	SoC, err := strconv.ParseFloat(values.SoC, 64)
+	if err != nil {
+		return err
+	}
+	devLocBat.SoC.Set(SoC)
+
+	U, err := strconv.ParseFloat(values.U, 64)
+	if err != nil {
+		return err
+	}
+	devLocBat.U.Set(U)
+
+	WorkCapacity, err := strconv.ParseFloat(values.WorkCapacity, 64)
+	if err != nil {
+		return err
+	}
+	devLocBat.WorkCapacity.Set(WorkCapacity)
 
 	return nil
 }
