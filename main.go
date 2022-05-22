@@ -82,6 +82,16 @@ func main() {
 	miakprom.InitAssetGauges(stockDbRepository)
 	miakprom.RecordCurrentValues(stockDbRepository)*/
 
+	router.GET("/reflect", func(c *gin.Context) {
+
+		values := prom.CheckSomething(&invDbRepository)
+
+		c.JSON(200, gin.H{
+			"message": "val test",
+			"values":  values,
+		})
+	})
+
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "test",

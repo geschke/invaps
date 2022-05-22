@@ -3,6 +3,7 @@ package invaprom
 import (
 	"fmt"
 	"log"
+	"reflect"
 	"strconv"
 	"time"
 
@@ -18,7 +19,7 @@ import (
 	Help: "Asset values",
 })*/
 
-var home = struct {
+/*var home = struct {
 	OwnP  prometheus.Gauge
 	PvP   prometheus.Gauge
 	P     prometheus.Gauge
@@ -51,6 +52,140 @@ var home = struct {
 		Help: "Current home consumption is covered from Grid",
 	}),
 }
+*/
+var devLoc = struct {
+	Bat2Grid_P    prometheus.Gauge `valtype:"avg" convert:"float"`
+	Dc_P          prometheus.Gauge `valtype:"avg" convert:"float"`
+	DigitalIn     prometheus.Gauge `valtype:"avg" convert:"float"`
+	EM_State      prometheus.Gauge `valtype:"avg" convert:"float"`
+	Grid2Bat_P    prometheus.Gauge `valtype:"avg" convert:"float"`
+	Grid_L1_I     prometheus.Gauge `valtype:"avg" convert:"float"`
+	Grid_L1_P     prometheus.Gauge `valtype:"avg" convert:"float"`
+	Grid_L2_I     prometheus.Gauge `valtype:"avg" convert:"float"`
+	Grid_L2_P     prometheus.Gauge `valtype:"avg" convert:"float"`
+	Grid_L3_I     prometheus.Gauge `valtype:"avg" convert:"float"`
+	Grid_L3_P     prometheus.Gauge `valtype:"avg" convert:"float"`
+	Grid_P        prometheus.Gauge `valtype:"avg" convert:"float"`
+	Grid_Q        prometheus.Gauge `valtype:"avg" convert:"float"`
+	Grid_S        prometheus.Gauge `valtype:"avg" convert:"float"`
+	HomeBat_P     prometheus.Gauge `valtype:"avg" convert:"float"`
+	HomeGrid_P    prometheus.Gauge `valtype:"avg" convert:"float"`
+	HomeOwn_P     prometheus.Gauge `valtype:"avg" convert:"float"`
+	HomePv_P      prometheus.Gauge `valtype:"avg" convert:"float"`
+	Home_P        prometheus.Gauge `valtype:"avg" convert:"float"`
+	InverterState prometheus.Gauge `valtype:"last" convert:"int"`
+	Iso_R         prometheus.Gauge `valtype:"avg" convert:"float"`
+	LimitEvuRel   prometheus.Gauge `valtype:"avg" convert:"float"`
+	PV2Bat_P      prometheus.Gauge `valtype:"avg" convert:"float"`
+	SinkMax_P     prometheus.Gauge `valtype:"last" convert:"float"`
+	SourceMax_P   prometheus.Gauge `valtype:"last" convert:"float"`
+	WorkTime      prometheus.Gauge `valtype:"last" convert:"float"`
+}{
+	Bat2Grid_P: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_bat2grid_p",
+		Help: "Local Bat2Grid_P",
+	}),
+	Dc_P: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_dc_p",
+		Help: "Local Dc_P",
+	}),
+	DigitalIn: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_digital_in",
+		Help: "Local DigitalIn",
+	}),
+	EM_State: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_em_state",
+		Help: "Local EM_State",
+	}),
+	Grid2Bat_P: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_grid2bat_p",
+		Help: "Local Grid2Bat_P",
+	}),
+	Grid_L1_I: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_grid_l1_i",
+		Help: "Local Grid_L1_I",
+	}),
+	Grid_L1_P: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_grid_l1_p",
+		Help: "Local Grid_L1_P",
+	}),
+	Grid_L2_I: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_grid_l2_i",
+		Help: "Local Grid_L2_I",
+	}),
+	Grid_L2_P: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_grid_l2_p",
+		Help: "Local Grid_L2_P",
+	}),
+	Grid_L3_I: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_grid_l3_i",
+		Help: "Local Grid_L3_I",
+	}),
+	Grid_L3_P: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_grid_l3_p",
+		Help: "Local Grid_L3_P",
+	}),
+	Grid_P: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_grid_p",
+		Help: "Local Grid_P",
+	}),
+	Grid_Q: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_grid_q",
+		Help: "Local Grid_Q",
+	}),
+	Grid_S: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_grid_s",
+		Help: "Local Grid_S",
+	}),
+	HomeBat_P: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_home_bat_p",
+		Help: "Current home consumption is covered from Battery",
+	}),
+	HomeGrid_P: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_home_grid_p",
+		Help: "Current home consumption is covered from Grid",
+	}),
+	HomeOwn_P: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_home_own_p",
+		Help: "Home Consumption in Watt.",
+	}),
+	HomePv_P: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_home_pv_p",
+		Help: "Current home consumption is covered from PV",
+	}),
+	Home_P: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_home_p",
+		Help: "Current home consumption",
+	}),
+	InverterState: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_inverter_state",
+		Help: "Local InverterState",
+	}),
+	Iso_R: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_iso_r",
+		Help: "Local Iso_R",
+	}),
+	LimitEvuRel: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_limit_evu_rel",
+		Help: "Local LimitEvuRel",
+	}),
+	PV2Bat_P: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_pv2bat_p",
+		Help: "Local PV2Bat_P",
+	}),
+	SinkMax_P: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_sink_max_p",
+		Help: "Local SinkMax_P",
+	}),
+	SourceMax_P: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_source_max_p",
+		Help: "Local SourceMax_P",
+	}),
+	WorkTime: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_work_time",
+		Help: "Local WorkTime",
+	}),
+}
 
 var devLocBat = struct {
 	BatManufacturer prometheus.Gauge
@@ -66,22 +201,18 @@ var devLocBat = struct {
 	WorkCapacity    prometheus.Gauge
 }{
 	BatManufacturer: prometheus.NewGauge(prometheus.GaugeOpts{
-		//Namespace: "Home Consumption",
 		Name: "devices_local_battery_bat_manufacturer",
 		Help: "Battery Manufacturer",
 	}),
 	BatModel: prometheus.NewGauge(prometheus.GaugeOpts{
-		//Namespace: "Home Consumption",
 		Name: "devices_local_battery_bat_model",
 		Help: "Battery Model",
 	}),
 	BatSerialNo: prometheus.NewGauge(prometheus.GaugeOpts{
-		//Namespace: "Home Consumption",
 		Name: "devices_local_battery_bat_serial_no",
 		Help: "Battery Serial Number",
 	}),
 	BatVersionFW: prometheus.NewGauge(prometheus.GaugeOpts{
-		//Namespace: "Home Consumption",
 		Name: "devices_local_battery_bat_version_fw",
 		Help: "Battery Firmware Version",
 	}),
@@ -90,27 +221,22 @@ var devLocBat = struct {
 		Help: "Battery Cycles",
 	}),
 	FullChargeCap_E: prometheus.NewGauge(prometheus.GaugeOpts{
-		//Namespace: "Home Consumption",
 		Name: "devices_local_battery_full_charge_cap_e",
 		Help: "Battery FullChargeCap_E",
 	}),
 	I: prometheus.NewGauge(prometheus.GaugeOpts{
-		//Namespace: "Home Consumption",
 		Name: "devices_local_battery_i",
 		Help: "Battery I",
 	}),
 	P: prometheus.NewGauge(prometheus.GaugeOpts{
-
 		Name: "devices_local_battery_p",
 		Help: "Battery P",
 	}),
 	SoC: prometheus.NewGauge(prometheus.GaugeOpts{
-
 		Name: "devices_local_battery_soc",
 		Help: "Battery SoC",
 	}),
 	U: prometheus.NewGauge(prometheus.GaugeOpts{
-
 		Name: "devices_local_battery_u",
 		Help: "Battery U",
 	}),
@@ -120,35 +246,6 @@ var devLocBat = struct {
 	}),
 }
 
-/*var (
-
-	homeOwnP = prometheus.NewGauge(prometheus.GaugeOpts{
-		//Namespace: "Home Consumption",
-		Name: "home_own_p_watt",
-		Help: "Home Consumption in Watt.",
-	})
-	homePvP = prometheus.NewGauge(prometheus.GaugeOpts{
-		//Namespace: "Home Consumption",
-		Name: "home_pv_p_watt",
-		Help: "Current home consumption is covered from PV",
-	})
-	homeP = prometheus.NewGauge(prometheus.GaugeOpts{
-		//Namespace: "Home Consumption",
-		Name: "home_p_watt",
-		Help: "Current home consumption",
-	})
-	homeBatP = prometheus.NewGauge(prometheus.GaugeOpts{
-		//Namespace: "Home Consumption",
-		Name: "home_bat_p_watt",
-		Help: "Current home consumption is covered from Battery",
-	})
-	homeGridP = prometheus.NewGauge(prometheus.GaugeOpts{
-		//Namespace: "Home Consumption",
-		Name: "home_grid_p_watt",
-		Help: "Current home consumption is covered from Grid",
-	})
-)
-*/
 /*
 // AssetGaugeGlobal is the Gauge vector to be filled with asset values
 var AssetGaugeGlobal = prometheus.NewGaugeVec(
@@ -182,11 +279,11 @@ var assetGauge []prometheus.Gauge
 var assetMap = make(map[string]assetGaugeOptsType)
 */
 func init() {
-	prometheus.MustRegister(home.OwnP)
-	prometheus.MustRegister(home.P)
-	prometheus.MustRegister(home.PvP)
-	prometheus.MustRegister(home.BatP)
-	prometheus.MustRegister(home.GridP)
+	//prometheus.MustRegister(home.OwnP)
+	//prometheus.MustRegister(home.P)
+	//prometheus.MustRegister(home.PvP)
+	//prometheus.MustRegister(home.BatP)
+	//prometheus.MustRegister(home.GridP)
 	prometheus.MustRegister(devLocBat.BatManufacturer)
 	prometheus.MustRegister(devLocBat.BatModel)
 	prometheus.MustRegister(devLocBat.BatSerialNo)
@@ -198,6 +295,32 @@ func init() {
 	prometheus.MustRegister(devLocBat.SoC)
 	prometheus.MustRegister(devLocBat.U)
 	prometheus.MustRegister(devLocBat.WorkCapacity)
+	prometheus.MustRegister(devLoc.Bat2Grid_P)
+	prometheus.MustRegister(devLoc.Dc_P)
+	prometheus.MustRegister(devLoc.DigitalIn)
+	prometheus.MustRegister(devLoc.EM_State)
+	prometheus.MustRegister(devLoc.Grid2Bat_P)
+	prometheus.MustRegister(devLoc.Grid_L1_I)
+	prometheus.MustRegister(devLoc.Grid_L1_P)
+	prometheus.MustRegister(devLoc.Grid_L2_I)
+	prometheus.MustRegister(devLoc.Grid_L2_P)
+	prometheus.MustRegister(devLoc.Grid_L3_I)
+	prometheus.MustRegister(devLoc.Grid_L3_P)
+	prometheus.MustRegister(devLoc.Grid_P)
+	prometheus.MustRegister(devLoc.Grid_Q)
+	prometheus.MustRegister(devLoc.Grid_S)
+	prometheus.MustRegister(devLoc.HomeBat_P)
+	prometheus.MustRegister(devLoc.HomeGrid_P)
+	prometheus.MustRegister(devLoc.HomeOwn_P)
+	prometheus.MustRegister(devLoc.HomePv_P)
+	prometheus.MustRegister(devLoc.Home_P)
+	prometheus.MustRegister(devLoc.InverterState)
+	prometheus.MustRegister(devLoc.Iso_R)
+	prometheus.MustRegister(devLoc.LimitEvuRel)
+	prometheus.MustRegister(devLoc.PV2Bat_P)
+	prometheus.MustRegister(devLoc.SinkMax_P)
+	prometheus.MustRegister(devLoc.SourceMax_P)
+	prometheus.MustRegister(devLoc.WorkTime)
 
 }
 
@@ -211,34 +334,118 @@ func PromHandler() gin.HandlerFunc {
 }
 
 func fillCurrentFromDB(db *invdb.Repository) error {
-	homeConsumption := db.GetHomeConsumption()
-	fmt.Println(homeConsumption)
+	devLocValues := db.GetDevicesLocal()
+	fmt.Println(devLocValues)
 
-	homeOwnPValue, err := strconv.ParseFloat(homeConsumption.HomeOwnP, 64)
-	if err != nil {
-		return err
+	typeSrc := reflect.TypeOf(devLoc)
+	valSrc := reflect.ValueOf(devLoc)
+	valValues := reflect.ValueOf(&devLocValues).Elem()
+	valtype := "avg"
+
+	for i := 0; i < valSrc.NumField(); i++ {
+		typeSrcField := typeSrc.Field(i)
+		fmt.Println("typeSrcField:", typeSrcField.Name)
+		valField := valValues.FieldByName(typeSrcField.Name)
+		if !valField.IsValid() {
+			continue
+		}
+
+		fmt.Println("value field value:", valField)
+
+		/*if dstField.Kind() != valSrc.Field(i).Kind() {
+			// src and dst has differen types
+			continue
+		}*/
+		srcTag := typeSrc.Field(i).Tag
+		fmt.Println("Tag valtype", srcTag.Get("valtype"))
+		if srcTag.Get("valtype") != valtype {
+			continue
+		}
+		fmt.Println("do convert! with ", typeSrcField.Name)
+		fmt.Println("Tag convert", srcTag.Get("convert"))
+		if srcTag.Get("convert") == "float" {
+			fmt.Println("convert to float")
+
+			convertedValue, err := strconv.ParseFloat(valField.String(), 64)
+			if err != nil {
+				continue
+				//return err
+			}
+			fmt.Println("converted value:", convertedValue)
+			//fmt.Println("canfloat?", valField.CanFloat())
+			//fmt.Println("string:", valField.String())
+			argv := make([]reflect.Value, 1)
+			argv[0] = reflect.ValueOf(convertedValue)
+			fmt.Println("reflectConverted", argv)
+			valSrc.Field(i).MethodByName("Set").Call(argv)
+
+		} else if srcTag.Get("convert") == "int" {
+			fmt.Println("convert to int")
+			convertedValue, err := strconv.ParseInt(valField.String(), 10, 64)
+			if err != nil {
+				continue
+				//return err
+			}
+			fmt.Println("converted value:", convertedValue)
+			//valSrc.Field(i).MethodByName("Set").Call(convertedValue)
+
+		} else {
+			fmt.Println("don't convert")
+			continue
+		}
+		/*		if srcTag.Get("structfield") == "nocopy" {
+				continue
+			}*/
+		//dstField.Set(valSrc.Field(i))
 	}
-	home.OwnP.Set(homeOwnPValue)
-	homePvPValue, err := strconv.ParseFloat(homeConsumption.HomePvP, 64)
-	if err != nil {
-		return err
-	}
-	home.PvP.Set(homePvPValue)
-	homePValue, err := strconv.ParseFloat(homeConsumption.HomeP, 64)
-	if err != nil {
-		return err
-	}
-	home.P.Set(homePValue)
-	homeBatPValue, err := strconv.ParseFloat(homeConsumption.HomeBatP, 64)
-	if err != nil {
-		return err
-	}
-	home.BatP.Set(homeBatPValue)
-	homeGridPValue, err := strconv.ParseFloat(homeConsumption.HomeGridP, 64)
-	if err != nil {
-		return err
-	}
-	home.GridP.Set(homeGridPValue)
+
+	/*	Bat2Grid_P, err := strconv.ParseFloat(devLocValues.Bat2Grid_P, 64)
+		if err != nil {
+			return err
+		}
+		devLoc.Bat2Grid_P.Set(Bat2Grid_P)
+
+		Dc_P, err := strconv.ParseFloat(devLocValues.Dc_P, 64)
+		if err != nil {
+			return err
+		}
+		devLoc.Dc_P.Set(Dc_P)
+
+		DigitalIn, err := strconv.ParseFloat(devLocValues.DigitalIn, 64)
+		if err != nil {
+			return err
+		}
+		devLoc.DigitalIn.Set(DigitalIn)
+	*/
+	/*	homeConsumption := db.GetHomeConsumption()
+		fmt.Println(homeConsumption)
+
+		homeOwnPValue, err := strconv.ParseFloat(homeConsumption.HomeOwnP, 64)
+		if err != nil {
+			return err
+		}
+		home.OwnP.Set(homeOwnPValue)
+		homePvPValue, err := strconv.ParseFloat(homeConsumption.HomePvP, 64)
+		if err != nil {
+			return err
+		}
+		home.PvP.Set(homePvPValue)
+		homePValue, err := strconv.ParseFloat(homeConsumption.HomeP, 64)
+		if err != nil {
+			return err
+		}
+		home.P.Set(homePValue)
+		homeBatPValue, err := strconv.ParseFloat(homeConsumption.HomeBatP, 64)
+		if err != nil {
+			return err
+		}
+		home.BatP.Set(homeBatPValue)
+		homeGridPValue, err := strconv.ParseFloat(homeConsumption.HomeGridP, 64)
+		if err != nil {
+			return err
+		}
+		home.GridP.Set(homeGridPValue)
+	*/
 
 	values := db.GetDevicesLocalBattery()
 	FullChargeCap_E, err := strconv.ParseFloat(values.FullChargeCap_E, 64)
@@ -335,4 +542,10 @@ func RecordCurrentValues(db *invdb.Repository) {
 			time.Sleep(60 * time.Second)
 		}
 	}()
+}
+
+func CheckSomething(db *invdb.Repository) interface{} {
+	fillCurrentFromDB(db)
+
+	return devLoc
 }
