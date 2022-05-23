@@ -19,40 +19,6 @@ import (
 	Help: "Asset values",
 })*/
 
-/*var home = struct {
-	OwnP  prometheus.Gauge
-	PvP   prometheus.Gauge
-	P     prometheus.Gauge
-	BatP  prometheus.Gauge
-	GridP prometheus.Gauge
-}{
-	OwnP: prometheus.NewGauge(prometheus.GaugeOpts{
-		//Namespace: "Home Consumption",
-		Name: "home_own_p_watt",
-		Help: "Home Consumption in Watt.",
-	}),
-	PvP: prometheus.NewGauge(prometheus.GaugeOpts{
-		//Namespace: "Home Consumption",
-		Name: "home_pv_p_watt",
-		Help: "Current home consumption is covered from PV",
-	}),
-	P: prometheus.NewGauge(prometheus.GaugeOpts{
-		//Namespace: "Home Consumption",
-		Name: "home_p_watt",
-		Help: "Current home consumption",
-	}),
-	BatP: prometheus.NewGauge(prometheus.GaugeOpts{
-		//Namespace: "Home Consumption",
-		Name: "home_bat_p_watt",
-		Help: "Current home consumption is covered from Battery",
-	}),
-	GridP: prometheus.NewGauge(prometheus.GaugeOpts{
-		//Namespace: "Home Consumption",
-		Name: "home_grid_p_watt",
-		Help: "Current home consumption is covered from Grid",
-	}),
-}
-*/
 var devLoc = struct {
 	Bat2Grid_P    prometheus.Gauge `valtype:"avg" convert:"float"`
 	Dc_P          prometheus.Gauge `valtype:"avg" convert:"float"`
@@ -187,6 +153,95 @@ var devLoc = struct {
 	}),
 }
 
+var devLocAc = struct {
+	CosPhi        prometheus.Gauge `valtype:"avg" convert:"float"`
+	Frequency     prometheus.Gauge `valtype:"avg" convert:"float"`
+	InvIn_P       prometheus.Gauge `valtype:"avg" convert:"float"`
+	InvOut_P      prometheus.Gauge `valtype:"avg" convert:"float"`
+	L1_I          prometheus.Gauge `valtype:"avg" convert:"float"`
+	L1_P          prometheus.Gauge `valtype:"avg" convert:"float"`
+	L1_U          prometheus.Gauge `valtype:"avg" convert:"float"`
+	L2_I          prometheus.Gauge `valtype:"avg" convert:"float"`
+	L2_P          prometheus.Gauge `valtype:"avg" convert:"float"`
+	L2_U          prometheus.Gauge `valtype:"avg" convert:"float"`
+	L3_I          prometheus.Gauge `valtype:"avg" convert:"float"`
+	L3_P          prometheus.Gauge `valtype:"avg" convert:"float"`
+	L3_U          prometheus.Gauge `valtype:"avg" convert:"float"`
+	P             prometheus.Gauge `valtype:"avg" convert:"float"`
+	Q             prometheus.Gauge `valtype:"avg" convert:"float"`
+	ResidualCDc_I prometheus.Gauge `valtype:"avg" convert:"float"`
+	S             prometheus.Gauge `valtype:"avg" convert:"float"`
+}{
+	CosPhi: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_ac_cos_phi",
+		Help: "Local AC CosPhi",
+	}),
+	Frequency: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_ac_frequency",
+		Help: "Local AC Frequency",
+	}),
+	InvIn_P: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_ac_inv_in_p",
+		Help: "Local AC InvIn_P",
+	}),
+	InvOut_P: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_ac_inv_out_p",
+		Help: "Local AC InvOut_P",
+	}),
+	L1_I: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_ac_l1_i",
+		Help: "Local AC L1_I",
+	}),
+	L1_P: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_ac_l1_p",
+		Help: "Local AC L1_P",
+	}),
+	L1_U: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_ac_l1_u",
+		Help: "Local AC L1_U",
+	}),
+	L2_I: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_ac_l2_i",
+		Help: "Local AC L2_I",
+	}),
+	L2_P: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_ac_l2_p",
+		Help: "Local AC L2_P",
+	}),
+	L2_U: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_ac_l2_u",
+		Help: "Local AC L2_U",
+	}),
+	L3_I: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_ac_l3_i",
+		Help: "Local AC L3_I",
+	}),
+	L3_P: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_ac_l3_p",
+		Help: "Local AC L3_P",
+	}),
+	L3_U: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_ac_l3_u",
+		Help: "Local AC L3_U",
+	}),
+	P: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_ac_p",
+		Help: "Local AC P",
+	}),
+	Q: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_ac_q",
+		Help: "Local AC Q",
+	}),
+	ResidualCDc_I: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_ac_residual_cdc_i",
+		Help: "Local Residual_CDc_I",
+	}),
+	S: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_ac_s",
+		Help: "Local AC S",
+	}),
+}
+
 var devLocBat = struct {
 	BatManufacturer prometheus.Gauge `valtype:"last" convert:"float"`
 	BatModel        prometheus.Gauge `valtype:"last" convert:"float"`
@@ -280,17 +335,6 @@ var assetMap = make(map[string]assetGaugeOptsType)
 */
 func init() {
 
-	prometheus.MustRegister(devLocBat.BatManufacturer)
-	prometheus.MustRegister(devLocBat.BatModel)
-	prometheus.MustRegister(devLocBat.BatSerialNo)
-	prometheus.MustRegister(devLocBat.BatVersionFW)
-	prometheus.MustRegister(devLocBat.Cycles)
-	prometheus.MustRegister(devLocBat.FullChargeCap_E)
-	prometheus.MustRegister(devLocBat.I)
-	prometheus.MustRegister(devLocBat.P)
-	prometheus.MustRegister(devLocBat.SoC)
-	prometheus.MustRegister(devLocBat.U)
-	prometheus.MustRegister(devLocBat.WorkCapacity)
 	prometheus.MustRegister(devLoc.Bat2Grid_P)
 	prometheus.MustRegister(devLoc.Dc_P)
 	prometheus.MustRegister(devLoc.DigitalIn)
@@ -317,6 +361,36 @@ func init() {
 	prometheus.MustRegister(devLoc.SinkMax_P)
 	prometheus.MustRegister(devLoc.SourceMax_P)
 	prometheus.MustRegister(devLoc.WorkTime)
+
+	prometheus.MustRegister(devLocAc.CosPhi)
+	prometheus.MustRegister(devLocAc.Frequency)
+	prometheus.MustRegister(devLocAc.InvIn_P)
+	prometheus.MustRegister(devLocAc.InvOut_P)
+	prometheus.MustRegister(devLocAc.L1_I)
+	prometheus.MustRegister(devLocAc.L1_P)
+	prometheus.MustRegister(devLocAc.L1_U)
+	prometheus.MustRegister(devLocAc.L2_I)
+	prometheus.MustRegister(devLocAc.L2_P)
+	prometheus.MustRegister(devLocAc.L2_U)
+	prometheus.MustRegister(devLocAc.L3_I)
+	prometheus.MustRegister(devLocAc.L3_P)
+	prometheus.MustRegister(devLocAc.L3_U)
+	prometheus.MustRegister(devLocAc.P)
+	prometheus.MustRegister(devLocAc.Q)
+	prometheus.MustRegister(devLocAc.ResidualCDc_I)
+	prometheus.MustRegister(devLocAc.S)
+
+	prometheus.MustRegister(devLocBat.BatManufacturer)
+	prometheus.MustRegister(devLocBat.BatModel)
+	prometheus.MustRegister(devLocBat.BatSerialNo)
+	prometheus.MustRegister(devLocBat.BatVersionFW)
+	prometheus.MustRegister(devLocBat.Cycles)
+	prometheus.MustRegister(devLocBat.FullChargeCap_E)
+	prometheus.MustRegister(devLocBat.I)
+	prometheus.MustRegister(devLocBat.P)
+	prometheus.MustRegister(devLocBat.SoC)
+	prometheus.MustRegister(devLocBat.U)
+	prometheus.MustRegister(devLocBat.WorkCapacity)
 
 }
 
@@ -405,6 +479,9 @@ func fillCurrentFromDB(db *invdb.Repository) error {
 	values := db.GetDevicesLocalBattery()
 
 	fillPromValues("avg", values, devLocBat)
+
+	devLocAcValuesDB := db.GetDevicesLocalAc()
+	fillPromValues("avg", devLocAcValuesDB, devLocAc)
 
 	return nil
 }
