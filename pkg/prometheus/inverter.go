@@ -188,17 +188,17 @@ var devLoc = struct {
 }
 
 var devLocBat = struct {
-	BatManufacturer prometheus.Gauge
-	BatModel        prometheus.Gauge
-	BatSerialNo     prometheus.Gauge
-	BatVersionFW    prometheus.Gauge
-	Cycles          prometheus.Gauge
-	FullChargeCap_E prometheus.Gauge
-	I               prometheus.Gauge
-	P               prometheus.Gauge
-	SoC             prometheus.Gauge
-	U               prometheus.Gauge
-	WorkCapacity    prometheus.Gauge
+	BatManufacturer prometheus.Gauge `valtype:"last" convert:"float"`
+	BatModel        prometheus.Gauge `valtype:"last" convert:"float"`
+	BatSerialNo     prometheus.Gauge `valtype:"last" convert:"float"`
+	BatVersionFW    prometheus.Gauge `valtype:"last" convert:"float"`
+	Cycles          prometheus.Gauge `valtype:"last" convert:"float"`
+	FullChargeCap_E prometheus.Gauge `valtype:"avg" convert:"float"`
+	I               prometheus.Gauge `valtype:"avg" convert:"float"`
+	P               prometheus.Gauge `valtype:"avg" convert:"float"`
+	SoC             prometheus.Gauge `valtype:"avg" convert:"float"`
+	U               prometheus.Gauge `valtype:"avg" convert:"float"`
+	WorkCapacity    prometheus.Gauge `valtype:"avg" convert:"float"`
 }{
 	BatManufacturer: prometheus.NewGauge(prometheus.GaugeOpts{
 		Name: "devices_local_battery_bat_manufacturer",
@@ -279,11 +279,7 @@ var assetGauge []prometheus.Gauge
 var assetMap = make(map[string]assetGaugeOptsType)
 */
 func init() {
-	//prometheus.MustRegister(home.OwnP)
-	//prometheus.MustRegister(home.P)
-	//prometheus.MustRegister(home.PvP)
-	//prometheus.MustRegister(home.BatP)
-	//prometheus.MustRegister(home.GridP)
+
 	prometheus.MustRegister(devLocBat.BatManufacturer)
 	prometheus.MustRegister(devLocBat.BatModel)
 	prometheus.MustRegister(devLocBat.BatSerialNo)
@@ -333,32 +329,28 @@ func PromHandler() gin.HandlerFunc {
 	}
 }
 
-func fillCurrentFromDB(db *invdb.Repository) error {
-	devLocValues := db.GetDevicesLocal()
-	fmt.Println(devLocValues)
+func fillPromValues(valueType string, valueSource, promLocation interface{}) {
 
-	typeSrc := reflect.TypeOf(devLoc)
-	valSrc := reflect.ValueOf(devLoc)
-	valValues := reflect.ValueOf(&devLocValues).Elem()
-	valtype := "avg"
+	typeSrc := reflect.TypeOf(promLocation)
+	valSrc := reflect.ValueOf(promLocation)
+	fmt.Println("typeSrc:", typeSrc)
+	fmt.Println("valSrc:", valSrc)
+
+	valueSourceElem := reflect.ValueOf(&valueSource).Elem().Elem()
 
 	for i := 0; i < valSrc.NumField(); i++ {
 		typeSrcField := typeSrc.Field(i)
 		fmt.Println("typeSrcField:", typeSrcField.Name)
-		valField := valValues.FieldByName(typeSrcField.Name)
+		valField := valueSourceElem.FieldByName(typeSrcField.Name)
 		if !valField.IsValid() {
 			continue
 		}
 
 		fmt.Println("value field value:", valField)
 
-		/*if dstField.Kind() != valSrc.Field(i).Kind() {
-			// src and dst has differen types
-			continue
-		}*/
 		srcTag := typeSrc.Field(i).Tag
 		fmt.Println("Tag valtype", srcTag.Get("valtype"))
-		if srcTag.Get("valtype") != valtype {
+		if srcTag.Get("valtype") != valueType {
 			continue
 		}
 		fmt.Println("do convert! with ", typeSrcField.Name)
@@ -388,6 +380,10 @@ func fillCurrentFromDB(db *invdb.Repository) error {
 			}
 			fmt.Println("converted value:", convertedValue)
 			//valSrc.Field(i).MethodByName("Set").Call(convertedValue)
+			argv := make([]reflect.Value, 1)
+			argv[0] = reflect.ValueOf(float64(convertedValue))
+			fmt.Println("reflectConverted", argv)
+			valSrc.Field(i).MethodByName("Set").Call(argv)
 
 		} else {
 			fmt.Println("don't convert")
@@ -398,91 +394,17 @@ func fillCurrentFromDB(db *invdb.Repository) error {
 			}*/
 		//dstField.Set(valSrc.Field(i))
 	}
+}
 
-	/*	Bat2Grid_P, err := strconv.ParseFloat(devLocValues.Bat2Grid_P, 64)
-		if err != nil {
-			return err
-		}
-		devLoc.Bat2Grid_P.Set(Bat2Grid_P)
+func fillCurrentFromDB(db *invdb.Repository) error {
+	devLocValuesDB := db.GetDevicesLocal()
+	fmt.Println(devLocValuesDB)
 
-		Dc_P, err := strconv.ParseFloat(devLocValues.Dc_P, 64)
-		if err != nil {
-			return err
-		}
-		devLoc.Dc_P.Set(Dc_P)
-
-		DigitalIn, err := strconv.ParseFloat(devLocValues.DigitalIn, 64)
-		if err != nil {
-			return err
-		}
-		devLoc.DigitalIn.Set(DigitalIn)
-	*/
-	/*	homeConsumption := db.GetHomeConsumption()
-		fmt.Println(homeConsumption)
-
-		homeOwnPValue, err := strconv.ParseFloat(homeConsumption.HomeOwnP, 64)
-		if err != nil {
-			return err
-		}
-		home.OwnP.Set(homeOwnPValue)
-		homePvPValue, err := strconv.ParseFloat(homeConsumption.HomePvP, 64)
-		if err != nil {
-			return err
-		}
-		home.PvP.Set(homePvPValue)
-		homePValue, err := strconv.ParseFloat(homeConsumption.HomeP, 64)
-		if err != nil {
-			return err
-		}
-		home.P.Set(homePValue)
-		homeBatPValue, err := strconv.ParseFloat(homeConsumption.HomeBatP, 64)
-		if err != nil {
-			return err
-		}
-		home.BatP.Set(homeBatPValue)
-		homeGridPValue, err := strconv.ParseFloat(homeConsumption.HomeGridP, 64)
-		if err != nil {
-			return err
-		}
-		home.GridP.Set(homeGridPValue)
-	*/
+	fillPromValues("avg", devLocValuesDB, devLoc)
 
 	values := db.GetDevicesLocalBattery()
-	FullChargeCap_E, err := strconv.ParseFloat(values.FullChargeCap_E, 64)
-	if err != nil {
-		return err
-	}
-	devLocBat.FullChargeCap_E.Set(FullChargeCap_E)
 
-	I, err := strconv.ParseFloat(values.I, 64)
-	if err != nil {
-		return err
-	}
-	devLocBat.I.Set(I)
-
-	P, err := strconv.ParseFloat(values.P, 64)
-	if err != nil {
-		return err
-	}
-	devLocBat.P.Set(P)
-
-	SoC, err := strconv.ParseFloat(values.SoC, 64)
-	if err != nil {
-		return err
-	}
-	devLocBat.SoC.Set(SoC)
-
-	U, err := strconv.ParseFloat(values.U, 64)
-	if err != nil {
-		return err
-	}
-	devLocBat.U.Set(U)
-
-	WorkCapacity, err := strconv.ParseFloat(values.WorkCapacity, 64)
-	if err != nil {
-		return err
-	}
-	devLocBat.WorkCapacity.Set(WorkCapacity)
+	fillPromValues("avg", values, devLocBat)
 
 	return nil
 }
@@ -491,35 +413,13 @@ func fillLastFromDB(db *invdb.Repository) error {
 
 	batteryLast := db.GetDevicesLocalBatteryLast()
 	fmt.Println(batteryLast)
-	BatManufacturer, err := strconv.ParseFloat(batteryLast.BatManufacturer, 64)
-	if err != nil {
-		return err
-	}
-	devLocBat.BatManufacturer.Set(BatManufacturer)
 
-	BatModel, err := strconv.ParseFloat(batteryLast.BatModel, 64)
-	if err != nil {
-		return err
-	}
-	devLocBat.BatModel.Set(BatModel)
+	fillPromValues("last", batteryLast, devLocBat)
 
-	BatSerialNo, err := strconv.ParseFloat(batteryLast.BatSerialNo, 64)
-	if err != nil {
-		return err
-	}
-	devLocBat.BatSerialNo.Set(BatSerialNo)
-
-	BatVersionFW, err := strconv.ParseFloat(batteryLast.BatVersionFW, 64)
-	if err != nil {
-		return err
-	}
-	devLocBat.BatVersionFW.Set(BatVersionFW)
-
-	Cycles, err := strconv.ParseFloat(batteryLast.Cycles, 64)
-	if err != nil {
-		return err
-	}
-	devLocBat.Cycles.Set(Cycles)
+	devLocLast := db.GetDevicesLocalLast()
+	fmt.Println("devLocLast:")
+	fmt.Println(devLocLast)
+	fillPromValues("last", devLocLast, devLoc)
 
 	return nil
 }
