@@ -94,7 +94,7 @@ func main() {
 
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
-			"message": "test",
+			"message": "Nothing here! Please use the /metrics endpoint to get data for Prometheus.",
 		})
 	})
 

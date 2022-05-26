@@ -13,12 +13,6 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-// AssetValueTest is a definition of Prometheus Gauge
-/*var AssetValueGlobal = prometheus.NewGauge(prometheus.GaugeOpts{
-	Name: "asset_value_euro",
-	Help: "Asset values",
-})*/
-
 var devLoc = struct {
 	Bat2Grid_P    prometheus.Gauge `valtype:"avg" convert:"float"`
 	Dc_P          prometheus.Gauge `valtype:"avg" convert:"float"`
@@ -301,38 +295,404 @@ var devLocBat = struct {
 	}),
 }
 
-/*
-// AssetGaugeGlobal is the Gauge vector to be filled with asset values
-var AssetGaugeGlobal = prometheus.NewGaugeVec(
-	prometheus.GaugeOpts{
-		//Namespace: "our_company",
-		//Subsystem: "blob_storage",
-		Name: "Home Consumasset_value_euro",
-		Help: "Asset Values",
-	},
-	[]string{
-		// Our depot
-		"depot",
-		"isin",
-		// Asset type (share, fund, etf)
-		"asset_type",
-		"asset_name",
-	},
-)
-
-type assetGaugeOptsType struct {
-	Name      string
-	Help      string
-	AssetType string
-	//DepotName string
-	//AssetGauge prometheus.Gauge
-	AssetGauge *prometheus.GaugeVec
+var devLocPowermeter = struct {
+	CosPhi    prometheus.Gauge `valtype:"avg" convert:"float"`
+	Frequency prometheus.Gauge `valtype:"avg" convert:"float"`
+	P         prometheus.Gauge `valtype:"avg" convert:"float"`
+	Q         prometheus.Gauge `valtype:"avg" convert:"float"`
+	S         prometheus.Gauge `valtype:"avg" convert:"float"`
+}{
+	CosPhi: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_powermeter_cos_phi",
+		Help: "Powermeter CosPhi",
+	}),
+	Frequency: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_powermeter_frequency",
+		Help: "Powermeter Frequency",
+	}),
+	P: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_powermeter_p",
+		Help: "Powermeter P",
+	}),
+	Q: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_powermeter_q",
+		Help: "Powermeter Q",
+	}),
+	S: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_powermeter_s",
+		Help: "Powermeter S",
+	}),
 }
-*/
-/*
-var assetGauge []prometheus.Gauge
-var assetMap = make(map[string]assetGaugeOptsType)
-*/
+
+var devLocPv1 = struct {
+	I prometheus.Gauge `valtype:"avg" convert:"float"`
+	P prometheus.Gauge `valtype:"avg" convert:"float"`
+	U prometheus.Gauge `valtype:"avg" convert:"float"`
+}{
+	I: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_pv1_i",
+		Help: "PV1 I",
+	}),
+	P: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_pv1_p",
+		Help: "PV1 P",
+	}),
+	U: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_pv1_u",
+		Help: "PV1 U",
+	}),
+}
+
+var devLocPv2 = struct {
+	I prometheus.Gauge `valtype:"avg" convert:"float"`
+	P prometheus.Gauge `valtype:"avg" convert:"float"`
+	U prometheus.Gauge `valtype:"avg" convert:"float"`
+}{
+	I: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_pv2_i",
+		Help: "PV2 I",
+	}),
+	P: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_pv2_p",
+		Help: "PV2 P",
+	}),
+	U: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "devices_local_pv2_u",
+		Help: "PV2 U",
+	}),
+}
+
+var scbStatisticEnergyFlow = struct {
+	StatisticAutarkyDay               prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticAutarkyMonth             prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticAutarkyTotal             prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticAutarkyYear              prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticCO2SavingDay             prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticCO2SavingMonth           prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticCO2SavingTotal           prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticCO2SavingYear            prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyChargeGridDay      prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyChargeGridMonth    prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyChargeGridTotal    prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyChargeGridYear     prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyChargeInvInDay     prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyChargeInvInMonth   prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyChargeInvInTotal   prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyChargeInvInYear    prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyChargePvDay        prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyChargePvMonth      prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyChargePvTotal      prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyChargePvYear       prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyDischargeDay       prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyDischargeMonth     prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyDischargeTotal     prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyDischargeYear      prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyDischargeGridDay   prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyDischargeGridMonth prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyDischargeGridTotal prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyDischargeGridYear  prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyHomeDay            prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyHomeMonth          prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyHomeTotal          prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyHomeYear           prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyHomeBatDay         prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyHomeBatMonth       prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyHomeBatTotal       prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyHomeBatYear        prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyHomeGridDay        prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyHomeGridMonth      prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyHomeGridTotal      prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyHomeGridYear       prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyHomeOwnTotal       prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyHomePvDay          prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyHomePvMonth        prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyHomePvTotal        prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyHomePvYear         prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyPv1Day             prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyPv1Month           prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyPv1Total           prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyPv1Year            prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyPv2Day             prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyPv2Month           prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyPv2Total           prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyPv2Year            prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyPv3Day             prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyPv3Month           prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyPv3Total           prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticEnergyPv3Year            prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticOwnConsumptionRateDay    prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticOwnConsumptionRateMonth  prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticOwnConsumptionRateTotal  prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticOwnConsumptionRateYear   prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticYieldDay                 prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticYieldMonth               prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticYieldTotal               prometheus.Gauge `valtype:"last" convert:"float"`
+	StatisticYieldYear                prometheus.Gauge `valtype:"last" convert:"float"`
+}{
+	StatisticAutarkyDay: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_autarky_day",
+		Help: "Statistic Autarky Day",
+	}),
+	StatisticAutarkyMonth: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_autarky_month",
+		Help: "Statistic Autarky Month",
+	}),
+	StatisticAutarkyTotal: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_autarky_total",
+		Help: "Statistic Autarky Total",
+	}),
+	StatisticAutarkyYear: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_autarky_year",
+		Help: "Statistic Autarky Year",
+	}),
+	StatisticCO2SavingDay: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_co2saving_day",
+		Help: "Statistic CO2Saving Day",
+	}),
+	StatisticCO2SavingMonth: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_co2saving_month",
+		Help: "Statistic CO2Saving Month",
+	}),
+	StatisticCO2SavingTotal: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_co2saving_total",
+		Help: "Statistic CO2Saving Total",
+	}),
+	StatisticCO2SavingYear: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_co2saving_year",
+		Help: "Statistic CO2Saving Year",
+	}),
+	StatisticEnergyChargeGridDay: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_charge_grid_day",
+		Help: "Statistic EnergyChargeGrid Day",
+	}),
+	StatisticEnergyChargeGridMonth: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_charge_grid_month",
+		Help: "Statistic EnergyChargeGrid Month",
+	}),
+	StatisticEnergyChargeGridTotal: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_charge_grid_total",
+		Help: "Statistic EnergyChargeGrid Total",
+	}),
+	StatisticEnergyChargeGridYear: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_charge_grid_year",
+		Help: "Statistic EnergyChargeGrid Year",
+	}),
+	StatisticEnergyChargeInvInDay: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_charge_inv_in_day",
+		Help: "Statistic EnergyChargeInvIn Day",
+	}),
+	StatisticEnergyChargeInvInMonth: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_charge_inv_in_month",
+		Help: "Statistic EnergyChargeInvIn Month",
+	}),
+	StatisticEnergyChargeInvInTotal: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_charge_inv_in_total",
+		Help: "Statistic EnergyChargeInvIn Total",
+	}),
+	StatisticEnergyChargeInvInYear: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_charge_inv_in_year",
+		Help: "Statistic EnergyChargeInvIn Year",
+	}),
+	StatisticEnergyChargePvDay: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_charge_pv_day",
+		Help: "Statistic EnergyChargePv Day",
+	}),
+	StatisticEnergyChargePvMonth: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_charge_pv_month",
+		Help: "Statistic EnergyChargePv Month",
+	}),
+	StatisticEnergyChargePvTotal: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_charge_pv_total",
+		Help: "Statistic EnergyChargePv Total",
+	}),
+	StatisticEnergyChargePvYear: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_charge_pv_year",
+		Help: "Statistic EnergyChargePv Year",
+	}),
+	StatisticEnergyDischargeDay: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_discharge_day",
+		Help: "Statistic EnergyDischarge Day",
+	}),
+	StatisticEnergyDischargeMonth: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_discharge_month",
+		Help: "Statistic EnergyDischarge Month",
+	}),
+	StatisticEnergyDischargeTotal: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_discharge_total",
+		Help: "Statistic EnergyDischarge Total",
+	}),
+	StatisticEnergyDischargeYear: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_discharge_year",
+		Help: "Statistic EnergyDischarge Year",
+	}),
+	StatisticEnergyDischargeGridDay: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_discharge_grid_day",
+		Help: "Statistic EnergyDischargeGrid Day",
+	}),
+	StatisticEnergyDischargeGridMonth: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_discharge_grid_month",
+		Help: "Statistic EnergyDischargeGrid Month",
+	}),
+	StatisticEnergyDischargeGridTotal: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_discharge_grid_total",
+		Help: "Statistic EnergyDischargeGrid Total",
+	}),
+	StatisticEnergyDischargeGridYear: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_discharge_grid_year",
+		Help: "Statistic EnergyDischargeGrid Year",
+	}),
+	StatisticEnergyHomeDay: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_home_day",
+		Help: "Statistic EnergyHome Day",
+	}),
+	StatisticEnergyHomeMonth: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_home_month",
+		Help: "Statistic EnergyHome Month",
+	}),
+	StatisticEnergyHomeTotal: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_home_total",
+		Help: "Statistic EnergyHome Total",
+	}),
+	StatisticEnergyHomeYear: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_home_year",
+		Help: "Statistic EnergyHome Year",
+	}),
+	StatisticEnergyHomeBatDay: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_home_bat_day",
+		Help: "Statistic EnergyHomeBat Day",
+	}),
+	StatisticEnergyHomeBatMonth: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_home_bat_month",
+		Help: "Statistic EnergyHomeBat Month",
+	}),
+	StatisticEnergyHomeBatTotal: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_home_bat_total",
+		Help: "Statistic EnergyHomeBat Total",
+	}),
+	StatisticEnergyHomeBatYear: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_home_bat_year",
+		Help: "Statistic EnergyHomeBat Year",
+	}),
+	StatisticEnergyHomeGridDay: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_home_grid_day",
+		Help: "Statistic EnergyHomeGrid Day",
+	}),
+	StatisticEnergyHomeGridMonth: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_home_grid_month",
+		Help: "Statistic EnergyHomeGrid Month",
+	}),
+	StatisticEnergyHomeGridTotal: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_home_grid_total",
+		Help: "Statistic EnergyHomeGrid Total",
+	}),
+	StatisticEnergyHomeGridYear: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_home_grid_year",
+		Help: "Statistic EnergyHomeGrid Year",
+	}),
+	StatisticEnergyHomeOwnTotal: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_home_own_total",
+		Help: "Statistic EnergyHomeOwn Total",
+	}),
+	StatisticEnergyHomePvDay: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_home_pv_day",
+		Help: "Statistic EnergyHomePv Day",
+	}),
+	StatisticEnergyHomePvMonth: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_home_pv_month",
+		Help: "Statistic EnergyHomePv Month",
+	}),
+	StatisticEnergyHomePvTotal: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_home_pv_total",
+		Help: "Statistic EnergyHomePv Total",
+	}),
+	StatisticEnergyHomePvYear: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_home_pv_year",
+		Help: "Statistic EnergyHomePv Year",
+	}),
+	StatisticEnergyPv1Day: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_pv1_day",
+		Help: "Statistic EnergyPv1 Day",
+	}),
+	StatisticEnergyPv1Month: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_pv1_month",
+		Help: "Statistic EnergyPv1 Month",
+	}),
+	StatisticEnergyPv1Total: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_pv1_total",
+		Help: "Statistic EnergyPv1 Total",
+	}),
+	StatisticEnergyPv1Year: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_pv1_year",
+		Help: "Statistic EnergyPv1 Year",
+	}),
+	StatisticEnergyPv2Day: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_pv2_day",
+		Help: "Statistic EnergyPv2 Day",
+	}),
+	StatisticEnergyPv2Month: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_pv2_month",
+		Help: "Statistic EnergyPv2 Month",
+	}),
+	StatisticEnergyPv2Total: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_pv2_total",
+		Help: "Statistic EnergyPv2 Total",
+	}),
+	StatisticEnergyPv2Year: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_pv2_year",
+		Help: "Statistic EnergyPv2 Year",
+	}),
+	StatisticEnergyPv3Day: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_pv3_day",
+		Help: "Statistic EnergyPv3 Day",
+	}),
+	StatisticEnergyPv3Month: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_pv3_month",
+		Help: "Statistic EnergyPv3 Month",
+	}),
+	StatisticEnergyPv3Total: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_pv3_total",
+		Help: "Statistic EnergyPv3 Total",
+	}),
+	StatisticEnergyPv3Year: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_energy_pv3_year",
+		Help: "Statistic EnergyPv3 Year",
+	}),
+
+	StatisticOwnConsumptionRateDay: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_own_consumption_rate_day",
+		Help: "Statistic OwnConsumptionRate Day",
+	}),
+	StatisticOwnConsumptionRateMonth: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_own_consumption_rate_month",
+		Help: "Statistic OwnConsumptionRate Month",
+	}),
+	StatisticOwnConsumptionRateTotal: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_own_consumption_rate_total",
+		Help: "Statistic OwnConsumptionRate Total",
+	}),
+	StatisticOwnConsumptionRateYear: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_own_consumption_rate_year",
+		Help: "Statistic OwnConsumptionRate Year",
+	}),
+
+	StatisticYieldDay: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_yield_day",
+		Help: "Statistic Yield Day",
+	}),
+	StatisticYieldMonth: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_yield_month",
+		Help: "Statistic Yield Month",
+	}),
+	StatisticYieldTotal: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_yield_total",
+		Help: "Statistic Yield Total",
+	}),
+	StatisticYieldYear: prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "statistic_yield_year",
+		Help: "Statistic Yield Year",
+	}),
+}
+
 func init() {
 
 	prometheus.MustRegister(devLoc.Bat2Grid_P)
@@ -391,6 +751,86 @@ func init() {
 	prometheus.MustRegister(devLocBat.SoC)
 	prometheus.MustRegister(devLocBat.U)
 	prometheus.MustRegister(devLocBat.WorkCapacity)
+
+	prometheus.MustRegister(devLocPowermeter.CosPhi)
+	prometheus.MustRegister(devLocPowermeter.Frequency)
+	prometheus.MustRegister(devLocPowermeter.P)
+	prometheus.MustRegister(devLocPowermeter.Q)
+	prometheus.MustRegister(devLocPowermeter.S)
+
+	prometheus.MustRegister(devLocPv1.I)
+	prometheus.MustRegister(devLocPv1.P)
+	prometheus.MustRegister(devLocPv1.U)
+
+	prometheus.MustRegister(devLocPv2.I)
+	prometheus.MustRegister(devLocPv2.P)
+	prometheus.MustRegister(devLocPv2.U)
+
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticAutarkyDay)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticAutarkyMonth)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticAutarkyTotal)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticAutarkyYear)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticCO2SavingDay)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticCO2SavingMonth)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticCO2SavingTotal)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticCO2SavingYear)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyChargeGridDay)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyChargeGridMonth)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyChargeGridTotal)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyChargeGridYear)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyChargeInvInDay)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyChargeInvInMonth)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyChargeInvInTotal)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyChargeInvInYear)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyChargePvDay)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyChargePvMonth)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyChargePvTotal)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyChargePvYear)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyDischargeDay)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyDischargeMonth)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyDischargeTotal)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyDischargeYear)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyDischargeGridDay)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyDischargeGridMonth)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyDischargeGridTotal)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyDischargeGridYear)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyHomeDay)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyHomeMonth)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyHomeTotal)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyHomeYear)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyHomeBatDay)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyHomeBatMonth)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyHomeBatTotal)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyHomeBatYear)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyHomeGridDay)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyHomeGridMonth)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyHomeGridTotal)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyHomeGridYear)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyHomeOwnTotal)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyHomePvDay)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyHomePvMonth)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyHomePvTotal)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyHomePvYear)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyPv1Day)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyPv1Month)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyPv1Total)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyPv1Year)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyPv2Day)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyPv2Month)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyPv2Total)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyPv2Year)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyPv3Day)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyPv3Month)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyPv3Total)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticEnergyPv3Year)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticOwnConsumptionRateDay)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticOwnConsumptionRateMonth)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticOwnConsumptionRateTotal)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticOwnConsumptionRateYear)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticYieldDay)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticYieldMonth)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticYieldTotal)
+	prometheus.MustRegister(scbStatisticEnergyFlow.StatisticYieldYear)
 
 }
 
@@ -483,6 +923,15 @@ func fillCurrentFromDB(db *invdb.Repository) error {
 	devLocAcValuesDB := db.GetDevicesLocalAc()
 	fillPromValues("avg", devLocAcValuesDB, devLocAc)
 
+	devLocPowermeterDB := db.GetDevicesLocalPowermeter()
+	fillPromValues("avg", devLocPowermeterDB, devLocPowermeter)
+
+	devLocPv1DB := db.GetDevicesLocalPv1()
+	fillPromValues("avg", devLocPv1DB, devLocPv1)
+
+	devLocPv2DB := db.GetDevicesLocalPv2()
+	fillPromValues("avg", devLocPv2DB, devLocPv2)
+
 	return nil
 }
 
@@ -497,6 +946,10 @@ func fillLastFromDB(db *invdb.Repository) error {
 	fmt.Println("devLocLast:")
 	fmt.Println(devLocLast)
 	fillPromValues("last", devLocLast, devLoc)
+
+	statisticsEnergyFlow := db.GetStatisticEnergyFlowLast()
+	fmt.Println(statisticsEnergyFlow)
+	fillPromValues("last", statisticsEnergyFlow, scbStatisticEnergyFlow)
 
 	return nil
 }
@@ -519,10 +972,19 @@ func RecordCurrentValues(db *invdb.Repository) {
 			time.Sleep(60 * time.Second)
 		}
 	}()
+	go func() {
+		for {
+			log.Println("in recordcurrentValues again Remove Data!!!")
+			//FillValuesTest()
+			db.RemoveData(2)
+			time.Sleep(24 * time.Hour)
+		}
+	}()
 }
 
 func CheckSomething(db *invdb.Repository) interface{} {
-	fillCurrentFromDB(db)
+	//fillCurrentFromDB(db)
+	db.RemoveData(2)
 
 	return devLoc
 }
