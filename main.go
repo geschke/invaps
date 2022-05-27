@@ -45,31 +45,23 @@ func GetDbConfig() dbconn.DatabaseConfiguration {
 	return config
 }
 
-func infoDb() invdb.Repository {
-	fmt.Println("Test")
+func getDbRepository() invdb.Repository {
+
 	config := dbconn.ConnectDB(GetDbConfig())
 
 	repository := invdb.NewRepository(config)
-	//repository.GetProcessdata()
+
 	return *repository
 }
 
 func main() {
-	/*r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
-	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
-	*/
 
 	err := LoadConfig(".")
 	if err != nil {
 		log.Fatal("cannot load config:", err)
 	}
 
-	invDbRepository := infoDb()
+	invDbRepository := getDbRepository()
 
 	router := gin.Default()
 
@@ -77,53 +69,9 @@ func main() {
 
 	prom.RecordCurrentValues(&invDbRepository)
 
-	/*router.GET("/metrics", miakprom.PromHandler())
-
-	miakprom.InitAssetGauges(stockDbRepository)
-	miakprom.RecordCurrentValues(stockDbRepository)*/
-
-	router.GET("/reflect", func(c *gin.Context) {
-
-		values := prom.CheckSomething(&invDbRepository)
-
-		c.JSON(200, gin.H{
-			"message": "val test",
-			"values":  values,
-		})
-	})
-
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "Nothing here! Please use the /metrics endpoint to get data for Prometheus.",
-		})
-	})
-
-	router.GET("/val", func(c *gin.Context) {
-
-		config := dbconn.ConnectDB(GetDbConfig())
-
-		repository := invdb.NewRepository(config)
-		values := repository.GetHomeConsumption()
-
-		c.JSON(200, gin.H{
-			"message": "val test",
-			"values":  values,
-		})
-	})
-
-	router.GET("/listtest", func(c *gin.Context) {
-		//depotID := getDepotFromSession(c)
-
-		//Depots := stockDbRepository.GetDepots()
-
-		//miakprom.PrintAssetGauges()
-		//miakprom.FillValuesTest()
-		/*Items, _ := stockDbRepository.GetLastAssetValues()
-		for _, item := range Items {
-			log.Println(item)
-		}*/
-		c.JSON(200, gin.H{
-			"message": "listtest",
 		})
 	})
 

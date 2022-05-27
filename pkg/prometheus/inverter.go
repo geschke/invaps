@@ -903,25 +903,20 @@ func fillPromValues(valueType string, valueSource, promLocation interface{}) {
 			fmt.Println("don't convert")
 			continue
 		}
-		/*		if srcTag.Get("structfield") == "nocopy" {
-				continue
-			}*/
-		//dstField.Set(valSrc.Field(i))
 	}
 }
 
 func fillCurrentFromDB(db *invdb.Repository) error {
-	devLocValuesDB := db.GetDevicesLocal()
-	fmt.Println(devLocValuesDB)
+	devLocDB := db.GetDevicesLocal()
 
-	fillPromValues("avg", devLocValuesDB, devLoc)
+	fillPromValues("avg", devLocDB, devLoc)
 
-	values := db.GetDevicesLocalBattery()
+	devLocBatDB := db.GetDevicesLocalBattery()
 
-	fillPromValues("avg", values, devLocBat)
+	fillPromValues("avg", devLocBatDB, devLocBat)
 
-	devLocAcValuesDB := db.GetDevicesLocalAc()
-	fillPromValues("avg", devLocAcValuesDB, devLocAc)
+	devLocAcDB := db.GetDevicesLocalAc()
+	fillPromValues("avg", devLocAcDB, devLocAc)
 
 	devLocPowermeterDB := db.GetDevicesLocalPowermeter()
 	fillPromValues("avg", devLocPowermeterDB, devLocPowermeter)
@@ -954,37 +949,30 @@ func fillLastFromDB(db *invdb.Repository) error {
 	return nil
 }
 
-// RecordCurrentValues fills Prometheus data structure with new test values
+// RecordCurrentValues fills Prometheus data structure with currentvalues
 func RecordCurrentValues(db *invdb.Repository) {
 	go func() {
 		for {
-			log.Println("in recordCurrentValues again!!!")
-			//FillValuesTest()
+			log.Println("in recordCurrentValues again!")
+
 			fillCurrentFromDB(db)
 			time.Sleep(30 * time.Second)
 		}
 	}()
 	go func() {
 		for {
-			log.Println("in recordcurrentValues again with last values!!!")
-			//FillValuesTest()
+			log.Println("in recordcurrentValues again with last values!")
+
 			fillLastFromDB(db)
 			time.Sleep(60 * time.Second)
 		}
 	}()
 	go func() {
 		for {
-			log.Println("in recordcurrentValues again Remove Data!!!")
-			//FillValuesTest()
+			log.Println("in recordcurrentValues again Remove Data!")
+
 			db.RemoveData(2)
 			time.Sleep(24 * time.Hour)
 		}
 	}()
-}
-
-func CheckSomething(db *invdb.Repository) interface{} {
-	//fillCurrentFromDB(db)
-	db.RemoveData(2)
-
-	return devLoc
 }
