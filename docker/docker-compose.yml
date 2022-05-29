@@ -1,0 +1,24 @@
+version: '3.3'
+services:
+  invaps:
+    image: invaps
+    container_name: invaps
+    restart: always
+    ports:
+      - "8080:8080"
+    #volumes:
+      #- type: bind
+      #  source: ./config
+      #  target: /config
+      #- type: bind
+      #  source: ../.env.test
+      #  target: /config/.env
+      
+    environment:
+      GIN_MODE: release
+      #DBHOST: <DATABASE HOST>
+      #DBUSER: solardbuser
+      #DBNAME: solardb
+      #DBPASSWORD: <YOURPASSWORD>
+      #DBPORT: 3307
+
