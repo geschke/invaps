@@ -1,7 +1,7 @@
 version: '3.3'
 services:
   invaps:
-    image: invaps
+    image: ghcr.io/geschke/invaps:main
     container_name: invaps
     restart: always
     ports:
@@ -16,9 +16,9 @@ services:
       
     environment:
       GIN_MODE: release
-      #DBHOST: <DATABASE HOST>
+      #DBHOST: <database host>
       #DBUSER: solardbuser
       #DBNAME: solardb
-      #DBPASSWORD: <YOURPASSWORD>
+      #DBPASSWORD: <database password>
       #DBPORT: 3307
 
