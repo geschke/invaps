@@ -1,7 +1,6 @@
 package invaprom
 
 import (
-	"fmt"
 	"log"
 	"reflect"
 	"strconv"
@@ -843,110 +842,140 @@ func PromHandler() gin.HandlerFunc {
 	}
 }
 
+// fillPromValues converts the data got from database and sets them into the variables used by Prometheus
 func fillPromValues(valueType string, valueSource, promLocation interface{}) {
 
 	typeSrc := reflect.TypeOf(promLocation)
 	valSrc := reflect.ValueOf(promLocation)
-	fmt.Println("typeSrc:", typeSrc)
-	fmt.Println("valSrc:", valSrc)
+	//fmt.Println("typeSrc:", typeSrc)
+	//fmt.Println("valSrc:", valSrc)
 
 	valueSourceElem := reflect.ValueOf(&valueSource).Elem().Elem()
 
 	for i := 0; i < valSrc.NumField(); i++ {
 		typeSrcField := typeSrc.Field(i)
-		fmt.Println("typeSrcField:", typeSrcField.Name)
+		//fmt.Println("typeSrcField:", typeSrcField.Name)
 		valField := valueSourceElem.FieldByName(typeSrcField.Name)
 		if !valField.IsValid() {
 			continue
 		}
 
-		fmt.Println("value field value:", valField)
+		//fmt.Println("value field value:", valField)
 
 		srcTag := typeSrc.Field(i).Tag
-		fmt.Println("Tag valtype", srcTag.Get("valtype"))
+		//fmt.Println("Tag valtype", srcTag.Get("valtype"))
 		if srcTag.Get("valtype") != valueType {
 			continue
 		}
-		fmt.Println("do convert! with ", typeSrcField.Name)
-		fmt.Println("Tag convert", srcTag.Get("convert"))
+		//fmt.Println("do convert! with ", typeSrcField.Name)
+		//fmt.Println("Tag convert", srcTag.Get("convert"))
 		if srcTag.Get("convert") == "float" {
-			fmt.Println("convert to float")
+			//fmt.Println("convert to float")
 
 			convertedValue, err := strconv.ParseFloat(valField.String(), 64)
 			if err != nil {
 				continue
-				//return err
+
 			}
-			fmt.Println("converted value:", convertedValue)
-			//fmt.Println("canfloat?", valField.CanFloat())
-			//fmt.Println("string:", valField.String())
+			//fmt.Println("converted value:", convertedValue)
+
 			argv := make([]reflect.Value, 1)
 			argv[0] = reflect.ValueOf(convertedValue)
-			fmt.Println("reflectConverted", argv)
+			//fmt.Println("reflectConverted", argv)
 			valSrc.Field(i).MethodByName("Set").Call(argv)
 
 		} else if srcTag.Get("convert") == "int" {
-			fmt.Println("convert to int")
+			//fmt.Println("convert to int")
 			convertedValue, err := strconv.ParseInt(valField.String(), 10, 64)
 			if err != nil {
 				continue
-				//return err
+
 			}
-			fmt.Println("converted value:", convertedValue)
-			//valSrc.Field(i).MethodByName("Set").Call(convertedValue)
+			//fmt.Println("converted value:", convertedValue)
+
 			argv := make([]reflect.Value, 1)
 			argv[0] = reflect.ValueOf(float64(convertedValue))
-			fmt.Println("reflectConverted", argv)
+			//fmt.Println("reflectConverted", argv)
 			valSrc.Field(i).MethodByName("Set").Call(argv)
 
 		} else {
-			fmt.Println("don't convert")
+			//fmt.Println("don't convert")
 			continue
 		}
 	}
 }
 
-func fillCurrentFromDB(db *invdb.Repository) error {
-	devLocDB := db.GetDevicesLocal()
+func fillCurrentFromDB(db *invdb.Repository) {
 
-	fillPromValues("avg", devLocDB, devLoc)
+	// fails with error output, but try to go on
+	devLocDB, err := db.GetDevicesLocal()
+	if err != nil {
+		log.Println("Error in calling db.GetDevicesLocal", err.Error())
+	} else {
+		fillPromValues("avg", devLocDB, devLoc)
+	}
 
-	devLocBatDB := db.GetDevicesLocalBattery()
+	devLocBatDB, err := db.GetDevicesLocalBattery()
+	if err != nil {
+		log.Println("Error in calling db.GetDevicesLocalBattery", err.Error())
+	} else {
+		fillPromValues("avg", devLocBatDB, devLocBat)
+	}
 
-	fillPromValues("avg", devLocBatDB, devLocBat)
+	devLocAcDB, err := db.GetDevicesLocalAc()
+	if err != nil {
+		log.Println("Error in calling db.GetDevicesLocalAc", err.Error())
+	} else {
+		fillPromValues("avg", devLocAcDB, devLocAc)
+	}
 
-	devLocAcDB := db.GetDevicesLocalAc()
-	fillPromValues("avg", devLocAcDB, devLocAc)
+	devLocPowermeterDB, err := db.GetDevicesLocalPowermeter()
+	if err != nil {
+		log.Println("Error in calling db.GetDevicesLocalPowermeter", err.Error())
+	} else {
+		fillPromValues("avg", devLocPowermeterDB, devLocPowermeter)
+	}
 
-	devLocPowermeterDB := db.GetDevicesLocalPowermeter()
-	fillPromValues("avg", devLocPowermeterDB, devLocPowermeter)
+	devLocPv1DB, err := db.GetDevicesLocalPv1()
+	if err != nil {
+		log.Println("Error in calling db.GetDevicesLocalPv1", err.Error())
+	} else {
+		fillPromValues("avg", devLocPv1DB, devLocPv1)
+	}
 
-	devLocPv1DB := db.GetDevicesLocalPv1()
-	fillPromValues("avg", devLocPv1DB, devLocPv1)
+	devLocPv2DB, err := db.GetDevicesLocalPv2()
+	if err != nil {
+		log.Println("Error in calling db.GetDevicesLocalPv2", err.Error())
+	} else {
+		fillPromValues("avg", devLocPv2DB, devLocPv2)
+	}
 
-	devLocPv2DB := db.GetDevicesLocalPv2()
-	fillPromValues("avg", devLocPv2DB, devLocPv2)
-
-	return nil
 }
 
-func fillLastFromDB(db *invdb.Repository) error {
+func fillLastFromDB(db *invdb.Repository) {
 
-	batteryLast := db.GetDevicesLocalBatteryLast()
-	fmt.Println(batteryLast)
+	batteryLast, err := db.GetDevicesLocalBatteryLast()
+	if err != nil {
+		log.Println("Error in calling db.GetDevicesBatteryLast", err.Error())
+	} else {
 
-	fillPromValues("last", batteryLast, devLocBat)
+		fillPromValues("last", batteryLast, devLocBat)
+	}
+	devLocLast, err := db.GetDevicesLocalLast()
+	if err != nil {
+		log.Println("Error in calling db.GetDevicesLocalLast", err.Error())
+	} else {
 
-	devLocLast := db.GetDevicesLocalLast()
-	fmt.Println("devLocLast:")
-	fmt.Println(devLocLast)
-	fillPromValues("last", devLocLast, devLoc)
+		fillPromValues("last", devLocLast, devLoc)
+	}
 
-	statisticsEnergyFlow := db.GetStatisticEnergyFlowLast()
-	fmt.Println(statisticsEnergyFlow)
-	fillPromValues("last", statisticsEnergyFlow, scbStatisticEnergyFlow)
+	statisticsEnergyFlow, err := db.GetStatisticEnergyFlowLast()
+	if err != nil {
+		log.Println("Error in calling db.GetStatisticEnergyFlowLast", err.Error())
+	} else {
+		fillPromValues("last", statisticsEnergyFlow, scbStatisticEnergyFlow)
+	}
 
-	return nil
 }
 
 // RecordCurrentValues fills Prometheus data structure with currentvalues

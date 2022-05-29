@@ -13,61 +13,71 @@ import (
 )
 
 // LoadConfig uses the viper library to load and extract database configuration from .env file or environment variables
-func LoadConfig(path string) (err error) {
-	viper.AddConfigPath(path)
+func LoadConfig() (dbconn.DatabaseConfiguration, string, error) {
+	var config dbconn.DatabaseConfiguration
+	var port string
+	viper.AddConfigPath(".")
+	viper.AddConfigPath("./config")
+	viper.AddConfigPath("/config") // for use in a Docker container
+
 	viper.SetConfigName(".env")
 	viper.SetConfigType("env")
 
-	viper.AutomaticEnv()
+	viper.SetDefault("dbPort", "3306")
+	viper.SetDefault("port", "8080")
 
-	err = viper.ReadInConfig()
-	if err != nil {
-		return
+	viper.BindEnv("DBHOST")
+	viper.BindEnv("DBNAME")
+	viper.BindEnv("DBUSER")
+	viper.BindEnv("DBPASSWORD")
+	viper.BindEnv("DBPORT")
+	viper.BindEnv("PORT")
+
+	//viper.AutomaticEnv()
+	if err := viper.ReadInConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			//return err
+		} else {
+
+			return config, port, fmt.Errorf("config file was found but another error ocurred: %v", err)
+		}
 	}
 
-	//err = viper.Unmarshal(&config)
-	return
+	err := viper.Unmarshal(&config)
+	if err != nil {
+		return config, port, err
+	}
+
+	port = viper.Get("port").(string)
+
+	return config, port, nil
 }
 
-func GetDbConfig() dbconn.DatabaseConfiguration {
-	// could something go wrong here?
-	fmt.Println(viper.Get("dbName"))
-	fmt.Println(viper.Get("dbHost"))
-	fmt.Println(viper.Get("dbUser"))
-	fmt.Println(viper.Get("dbPassword"))
-	fmt.Println(viper.Get("dbPort"))
-	var config dbconn.DatabaseConfiguration
-	config.DBHost = viper.GetString("dbHost")
-	config.DBName = viper.GetString("dbName")
-	config.DBPassword = viper.GetString("dbPassword")
-	config.DBUser = viper.GetString("dbUser")
-	config.DBPort = viper.GetString("dbPort")
-	return config
-}
+func getDbRepository(config dbconn.DatabaseConfiguration) invdb.Repository {
 
-func getDbRepository() invdb.Repository {
+	conn := dbconn.ConnectDB(config)
 
-	config := dbconn.ConnectDB(GetDbConfig())
-
-	repository := invdb.NewRepository(config)
+	repository := invdb.NewRepository(conn)
 
 	return *repository
 }
 
 func main() {
 
-	err := LoadConfig(".")
+	dbConfig, port, err := LoadConfig()
 	if err != nil {
 		log.Fatal("cannot load config:", err)
 	}
 
-	invDbRepository := getDbRepository()
+	log.Printf("invaps starting on port %s...\n", port)
+
+	invDbRepository := getDbRepository(dbConfig)
+
+	prom.RecordCurrentValues(&invDbRepository)
 
 	router := gin.Default()
 
 	router.GET("/metrics", prom.PromHandler())
-
-	prom.RecordCurrentValues(&invDbRepository)
 
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
@@ -75,5 +85,5 @@ func main() {
 		})
 	})
 
-	router.Run(":8080")
+	router.Run(":" + port)
 }
