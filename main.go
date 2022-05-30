@@ -53,9 +53,9 @@ func LoadConfig() (dbconn.DatabaseConfiguration, string, error) {
 	return config, port, nil
 }
 
-func getDbRepository(config dbconn.DatabaseConfiguration) invdb.Repository {
+func getDbRepository(dbConfig dbconn.DatabaseConfiguration) invdb.Repository {
 
-	conn := dbconn.ConnectDB(config)
+	conn := dbconn.ConnectDB(dbConfig)
 
 	repository := invdb.NewRepository(conn)
 
