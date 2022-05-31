@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/geschke/invafetch/pkg/dbconn"
 	"github.com/geschke/invafetch/pkg/invdb"
@@ -53,13 +54,17 @@ func LoadConfig() (dbconn.DatabaseConfiguration, string, error) {
 	return config, port, nil
 }
 
-func getDbRepository(dbConfig dbconn.DatabaseConfiguration) invdb.Repository {
+func getDbRepository(dbConfig dbconn.DatabaseConfiguration) (invdb.Repository, error) {
 
-	conn := dbconn.ConnectDB(dbConfig)
+	var repository *invdb.Repository
+	conn, err := dbconn.ConnectDB(dbConfig)
+	if err != nil {
+		return *repository, err
+	}
 
-	repository := invdb.NewRepository(conn)
+	repository = invdb.NewRepository(conn)
 
-	return *repository
+	return *repository, nil
 }
 
 func main() {
@@ -71,7 +76,11 @@ func main() {
 
 	log.Printf("invaps starting on port %s...\n", port)
 
-	invDbRepository := getDbRepository(dbConfig)
+	invDbRepository, err := getDbRepository(dbConfig)
+	if err != nil {
+		fmt.Println("an error occurred:", err.Error())
+		os.Exit(1)
+	}
 
 	prom.RecordCurrentValues(&invDbRepository)
 
