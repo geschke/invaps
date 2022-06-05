@@ -985,7 +985,7 @@ func RecordCurrentValues(db *invdb.Repository) {
 			log.Println("in recordCurrentValues again!")
 
 			fillCurrentFromDB(db)
-			time.Sleep(30 * time.Second)
+			time.Sleep(10 * time.Second)
 		}
 	}()
 	go func() {
@@ -993,7 +993,7 @@ func RecordCurrentValues(db *invdb.Repository) {
 			log.Println("in recordcurrentValues again with last values!")
 
 			fillLastFromDB(db)
-			time.Sleep(60 * time.Second)
+			time.Sleep(30 * time.Second)
 		}
 	}()
 	go func() {
