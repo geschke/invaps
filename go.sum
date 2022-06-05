@@ -77,6 +77,8 @@ github.com/geschke/invafetch v0.0.0-20220602171216-805c45f9fbe0 h1:m+jZxmXl8cVWg
 github.com/geschke/invafetch v0.0.0-20220602171216-805c45f9fbe0/go.mod h1:tAeTVIGt0mt61BxlwFgwJM8MFbr/Sn14rBf/Jsml/FY=
 github.com/geschke/invafetch v0.0.0-20220605155814-e0eacff9b5d7 h1:/Fr0kKFnGapEOzboERHSTJMQrZeV+EmIIkcq1claUjc=
 github.com/geschke/invafetch v0.0.0-20220605155814-e0eacff9b5d7/go.mod h1:tAeTVIGt0mt61BxlwFgwJM8MFbr/Sn14rBf/Jsml/FY=
+github.com/geschke/invafetch v0.0.0-20220605164128-86eba5393a51 h1:mEnXQh474Ugb5Czag+suk7TGmcx8rMk0QjMy6GV/oqo=
+github.com/geschke/invafetch v0.0.0-20220605164128-86eba5393a51/go.mod h1:tAeTVIGt0mt61BxlwFgwJM8MFbr/Sn14rBf/Jsml/FY=
 github.com/gin-contrib/sse v0.1.0 h1:Y/yl/+YNO8GZSjAhjMsSuLt29uWRFHdHYUb5lYOV9qE=
 github.com/gin-contrib/sse v0.1.0/go.mod h1:RHrZQHXnP2xjPF+u1gW/2HnVO7nvIa9PG3Gm+fLHvGI=
 github.com/gin-gonic/gin v1.8.0 h1:4WFH5yycBMA3za5Hnl425yd9ymdw1XPm4666oab+hv4=

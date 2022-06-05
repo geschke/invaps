@@ -3,7 +3,7 @@ module github.com/geschke/invaps
 go 1.18
 
 require (
-	github.com/geschke/invafetch v0.0.0-20220605155814-e0eacff9b5d7
+	github.com/geschke/invafetch v0.0.0-20220605164128-86eba5393a51
 	github.com/gin-gonic/gin v1.8.0
 	github.com/prometheus/client_golang v1.12.2
 	github.com/spf13/viper v1.12.0
