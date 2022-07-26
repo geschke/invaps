@@ -842,7 +842,7 @@ func PromHandler() gin.HandlerFunc {
 	}
 }
 
-// fillPromValues converts the data got from database and sets them into the variables used by Prometheus
+// fillPromValues converts the data got from database and puts them into the variables used by Prometheus
 func fillPromValues(valueType string, valueSource, promLocation interface{}) {
 
 	typeSrc := reflect.TypeOf(promLocation)
