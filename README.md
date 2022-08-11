@@ -30,9 +30,8 @@ In addition to the database connection, the web server port can also be configur
 
 Overview of the configuration options:
 
-
 |Name of environment variable|Defaults|Example|Hint|
-|--------------------|-------------|------------|--------|-------|
+|----------------------------|--------|-------|----|
 |DBHOST|(empty)|"MARIADB DATABASE SERVER"|database server|
 |DBUSER|(empty)|"DATABASE USERNAME"|database username|
 |DBNAME|(empty)|"DATABASE NAME"|name of database|
