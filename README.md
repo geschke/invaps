@@ -45,8 +45,6 @@ Invaps is built on top of the [Gin](https://gin-gonic.com/) HTTP web framework. 
 
 When invaps is started, the configuration file .env is read. If this is missing or no connection can be established, invaps is terminated.
 
-If invaps is called without parameters or with the --help or -h flag, an overview of the available commands is displayed:
-
 A successful start of invaps looks like the following:
 
 ```text
