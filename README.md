@@ -21,7 +21,6 @@ $ go install
 This command builds the invaps command, producing an executable binary. It then installs that binary as $HOME/go/bin/invaps (or, under Windows, %USERPROFILE%\go\bin\invaps.exe).
 Thus invaps can be started simply in the command line.
 
-
 ## Configuration
 
 A .env file is used for configuration, which must be located either in the current directory, in a ./config or /config directory. Invaps requires access to the database used by invafetch. As with invafetch, invaps requires read and write access, as the stored values are currently deleted after two days to reduce space requirements.

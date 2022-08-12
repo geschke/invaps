@@ -57,10 +57,8 @@ func LoadConfig() (dbconn.DatabaseConfiguration, string, error) {
 func getDbRepository(dbConfig dbconn.DatabaseConfiguration) (*invdb.Repository, error) {
 
 	var repository *invdb.Repository
-	conn, err := dbconn.ConnectDB(dbConfig)
-
+	conn, err := dbconn.ConnectDB(dbConfig, 15)
 	if err != nil {
-
 		return repository, err
 	}
 
@@ -79,9 +77,8 @@ func main() {
 	log.Printf("invaps starting on port %s...\n", port)
 
 	invDbRepository, err := getDbRepository(dbConfig)
-
 	if err != nil {
-		fmt.Println("an error occurred:", err.Error())
+		log.Println("an error occurred:", err.Error())
 		os.Exit(1)
 	}
 
@@ -97,5 +94,8 @@ func main() {
 		})
 	})
 
-	router.Run(":" + port)
+	err = router.Run(":" + port)
+	if err != nil {
+		log.Println("an error occurred:", err.Error())
+	}
 }
