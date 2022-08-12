@@ -31,10 +31,10 @@ Overview of the configuration options:
 
 |Name of environment variable|Defaults|Example|Hint|
 |----------------------------|--------|-------|----|
-|DBHOST|(empty)|"MARIADB DATABASE SERVER"|database server|
-|DBUSER|(empty)|"DATABASE USERNAME"|database username|
-|DBNAME|(empty)|"DATABASE NAME"|name of database|
-|DBPASSWORD|(empty)|"DATABASE PASSWORD"|password of database user|
+|DBHOST|(empty)|"db.example.com"|database server|
+|DBUSER|(empty)|"solardbuser"|database username|
+|DBNAME|(empty)|"solardb"|name of database|
+|DBPASSWORD|(empty)|"myDBPassword"|password of database user|
 |DBPORT|"3306"|"3306"|MariaDB port (optional)|
 |PORT|"8080"|"8080"|Webserver port|
 
