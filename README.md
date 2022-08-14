@@ -23,7 +23,7 @@ Thus invaps can be started simply in the command line.
 
 ## Configuration
 
-A .env file is used for configuration, which must be located either in the current directory, in a ./config or /config directory. Invaps requires access to the database used by invafetch. As with invafetch, invaps requires read and write access, as the stored values are currently deleted after two days to reduce space requirements.
+A .env file is used for configuration, which must be located either in the current directory, in a ./config or /config directory. Furthermore, the use of environment variables is possible. Invaps requires access to the database used by invafetch. As with invafetch, invaps requires read and write access, as the stored values are currently deleted after two days to reduce space requirements.
 
 In addition to the database connection, the web server port can also be configured, with this set to 8080 by default.
 
