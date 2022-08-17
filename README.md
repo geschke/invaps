@@ -2,10 +2,11 @@
 
 Invaps is a tool which reads inverter processdata values from a MariaDB database and acts as endpoint which can be scraped from Prometheus monitoring solution.
 
+This tool is not affiliated with Kostal and is no offical product of KOSTAL Solar Electric GmbH or any subsidiary company of Kostal Gruppe.
+
 ## Description / Overview
 
-Invaps is one of several building blocks for generating a Grafana dashboard for Kostal Plenticore inverters. Invafetch reads the Processdata values at regular intervals from the Inverter API and stores the results in JSON format in a MariaDB table. The Invaps tool uses these values, i.e. reads them and makes them available to Prometheus on request. Grafana, in turn, uses Prometheus as a data source to create a dashboard for the Kostal Plenticore inverter. Here, a modular concept was implemented so that one application, as small as possible, is responsible for a single task at a time. The MariaDB database serves as the interface for the Invafetch and Invaps tools and thus as a buffer for the Processdata values. For a description of Invafetch see [https://github.com/geschke/invafetch](https://github.com/geschke/invafetch), a complete example including definition of the Grafana dashboard and a Docker compose file to start all components in a Docker environment can be found at [https://github.com/geschke/grkopv-dashboard](https://github.com/geschke/grkopv-dashboard).
-
+Invaps is one of several building blocks for generating a Grafana dashboard for Kostal Plenticore inverters. Invafetch reads the processdata values at regular intervals from the Inverter API and stores the results in JSON format in a MariaDB table. The invaps tool uses these values, i.e. reads them and makes them available to Prometheus on request. Grafana, in turn, uses Prometheus as a data source to create a dashboard for the Kostal Plenticore inverter. Here, a modular concept was implemented so that one application, as small as possible, is responsible for a single task at a time. The MariaDB database serves as the interface for the invafetch and invaps tools and thus as a buffer for the processdata values. For a description of invafetch see [https://github.com/geschke/invafetch](https://github.com/geschke/invafetch), a complete example including definition of the Grafana dashboard and a Docker compose file to start all components in a Docker environment can be found at [https://github.com/geschke/grkopv-dashboard](https://github.com/geschke/grkopv-dashboard).
 
 ## Installation
 
@@ -18,14 +19,14 @@ $ go build
 $ go install
 ```
 
-This command builds the invaps command, producing an executable binary. It then installs that binary as $HOME/go/bin/invaps (or, under Windows, %USERPROFILE%\go\bin\invaps.exe).
+This command builds the `invaps` command, producing an executable binary. It then installs that binary as `$HOME/go/bin/invaps` (or, under Windows, `%USERPROFILE%\go\bin\invaps.exe`).
 Thus invaps can be started simply in the command line.
 
 ## Configuration
 
-A .env file is used for configuration, which must be located either in the current directory, in a ./config or /config directory. Furthermore, the use of environment variables is possible. Invaps requires access to the database used by invafetch. As with invafetch, invaps requires read and write access, as the stored values are currently deleted after two days to reduce space requirements.
+A `.env` file is used for configuration, which must be located either in the current directory, in a `./config` or `/config` directory. Furthermore, the use of environment variables is possible. Invaps requires access to the database used by invafetch. As with invafetch, invaps requires read and write access, as the stored values are currently deleted after two days to reduce space requirements.
 
-In addition to the database connection, the web server port can also be configured, with this set to 8080 by default.
+In addition to the database connection, the web server port can also be configured, with this set to *8080* by default.
 
 Overview of the configuration options:
 
@@ -40,9 +41,9 @@ Overview of the configuration options:
 
 ## Quick Start
 
-Invaps is built on top of the [Gin](https://gin-gonic.com/) HTTP web framework. Gin uses the environment variable GIN_MODE to set up debug mode, which contains additional output not required for operation. If GIN_MODE is not set, debug mode is enabled; for operation and to disable debug mode, set GIN_MODE=release.
+Invaps is built on top of the [Gin](https://gin-gonic.com/) HTTP web framework. Gin uses the environment variable `GIN_MODE` to set up debug mode, which contains additional output not required for operation. If `GIN_MODE` is not set, debug mode is enabled; for operation and to disable debug mode, set `GIN_MODE=release`.
 
-When invaps is started, the configuration file .env is read. If this is missing or no connection can be established, invaps is terminated.
+When invaps is started, the configuration file `.env` is read. If this is missing or no connection can be established, invaps is terminated.
 
 A successful start of invaps looks like the following:
 
