@@ -903,6 +903,7 @@ func fillPromValues(db *invdb.Repository, valueType string, valueSource, promLoc
 	}
 }
 
+// fillCurrentFromDB requests current values from database and fills Prometheus data structures
 func fillCurrentFromDB(db *invdb.Repository) {
 
 	// fails with error output, but try to go on
@@ -950,6 +951,7 @@ func fillCurrentFromDB(db *invdb.Repository) {
 
 }
 
+// fillLastFromDB requests last values (mostly statistics) from database and fills Prometheus data structures
 func fillLastFromDB(db *invdb.Repository) {
 
 	batteryLast, err := db.GetDevicesLocalBatteryLast()
@@ -976,11 +978,11 @@ func fillLastFromDB(db *invdb.Repository) {
 
 }
 
-// RecordCurrentValues fills Prometheus data structure with currentvalues
-func RecordCurrentValues(db *invdb.Repository) {
+// RecordCurrentValues fills Prometheus data structure with values from database
+func RecordCurrentValues(db *invdb.Repository, purgeDays int) {
 	go func() {
 		for {
-			log.Println("in recordCurrentValues again!")
+			log.Println("in recordCurrentValues again")
 
 			fillCurrentFromDB(db)
 			time.Sleep(10 * time.Second)
@@ -988,18 +990,24 @@ func RecordCurrentValues(db *invdb.Repository) {
 	}()
 	go func() {
 		for {
-			log.Println("in recordcurrentValues again with last values!")
+			log.Println("in recordcurrentValues again with last values")
 
 			fillLastFromDB(db)
 			time.Sleep(30 * time.Second)
 		}
 	}()
-	go func() {
-		for {
-			log.Println("in recordcurrentValues again Remove Data!")
 
-			db.RemoveData(2)
-			time.Sleep(24 * time.Hour)
-		}
-	}()
+	if purgeDays > 0 { // 0 or negative values disable purge
+		log.Printf("purge after %d days\n", purgeDays)
+		go func() {
+			for {
+				log.Println("in recordcurrentValues again, remove data")
+
+				db.RemoveData(purgeDays)
+				time.Sleep(24 * time.Hour)
+			}
+		}()
+	} else {
+		log.Println("purge disabled")
+	}
 }

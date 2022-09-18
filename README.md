@@ -24,7 +24,7 @@ Thus invaps can be started simply in the command line.
 
 ## Configuration
 
-A `.env` file is used for configuration, which must be located either in the current directory, in a `./config` or `/config` directory. Furthermore, the use of environment variables is possible. Invaps requires access to the database used by invafetch. As with invafetch, invaps requires read and write access, as the stored values are currently deleted after two days to reduce space requirements.
+A `.env` file is used for configuration, which must be located either in the current directory, in a `./config` or `/config` directory. Furthermore, the use of environment variables is possible. Invaps requires access to the database used by invafetch. As with invafetch, invaps requires read and write access, as the stored values are currently deleted by default after two days to reduce space requirements. To prevent deletion from the database the parameter PURGE_DAYS can be set to *0*.
 
 In addition to the database connection, the web server port can also be configured, with this set to *8080* by default.
 
@@ -38,6 +38,8 @@ Overview of the configuration options:
 |DBPASSWORD|(empty)|"myDBPassword"|password of database user|
 |DBPORT|"3306"|"3306"|MariaDB port (optional)|
 |PORT|"8080"|"8080"|Webserver port|
+|PURGE_DAYS|2|14|Purge from database after n days; 0 disables purge process (optional)|
+
 
 ## Quick Start
 

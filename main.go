@@ -14,9 +14,10 @@ import (
 )
 
 // LoadConfig uses the viper library to load and extract database configuration from .env file or environment variables
-func LoadConfig() (dbconn.DatabaseConfiguration, string, error) {
+func LoadConfig() (dbconn.DatabaseConfiguration, string, int, error) {
 	var config dbconn.DatabaseConfiguration
 	var port string
+	var purgeDays int
 	viper.AddConfigPath(".")
 	viper.AddConfigPath("./config")
 	viper.AddConfigPath("/config") // for use in a Docker container
@@ -26,6 +27,7 @@ func LoadConfig() (dbconn.DatabaseConfiguration, string, error) {
 
 	viper.SetDefault("dbPort", "3306")
 	viper.SetDefault("port", "8080")
+	viper.SetDefault("purge_days", 2)
 
 	viper.BindEnv("DBHOST")
 	viper.BindEnv("DBNAME")
@@ -33,6 +35,7 @@ func LoadConfig() (dbconn.DatabaseConfiguration, string, error) {
 	viper.BindEnv("DBPASSWORD")
 	viper.BindEnv("DBPORT")
 	viper.BindEnv("PORT")
+	viper.BindEnv("PURGE_DAYS")
 
 	//viper.AutomaticEnv()
 	if err := viper.ReadInConfig(); err != nil {
@@ -40,18 +43,19 @@ func LoadConfig() (dbconn.DatabaseConfiguration, string, error) {
 			//return err
 		} else {
 
-			return config, port, fmt.Errorf("config file was found but another error ocurred: %v", err)
+			return config, port, purgeDays, fmt.Errorf("config file was found but another error ocurred: %v", err)
 		}
 	}
 
 	err := viper.Unmarshal(&config)
 	if err != nil {
-		return config, port, err
+		return config, port, purgeDays, err
 	}
 
 	port = viper.Get("port").(string)
+	purgeDays = viper.GetInt("purge_days")
 
-	return config, port, nil
+	return config, port, purgeDays, nil
 }
 
 func getDbRepository(dbConfig dbconn.DatabaseConfiguration) (*invdb.Repository, error) {
@@ -69,7 +73,7 @@ func getDbRepository(dbConfig dbconn.DatabaseConfiguration) (*invdb.Repository, 
 
 func main() {
 
-	dbConfig, port, err := LoadConfig()
+	dbConfig, port, purgeDays, err := LoadConfig()
 	if err != nil {
 		log.Fatal("cannot load config:", err)
 	}
@@ -82,7 +86,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	prom.RecordCurrentValues(invDbRepository)
+	prom.RecordCurrentValues(invDbRepository, purgeDays)
 
 	router := gin.Default()
 
