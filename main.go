@@ -61,7 +61,8 @@ func LoadConfig() (dbconn.DatabaseConfiguration, string, int, error) {
 func getDbRepository(dbConfig dbconn.DatabaseConfiguration) (*invdb.Repository, error) {
 
 	var repository *invdb.Repository
-	conn, err := dbconn.ConnectDB(dbConfig, 15)
+
+	conn, err := dbconn.ConnectDB(dbConfig, 30) // allow 30 seconds to connect, this should pass the initialization time when using docker image of MariaDB/MySQL
 	if err != nil {
 		return repository, err
 	}
